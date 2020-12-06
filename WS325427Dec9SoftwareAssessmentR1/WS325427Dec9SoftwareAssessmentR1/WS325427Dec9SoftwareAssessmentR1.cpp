@@ -16,8 +16,8 @@ protected:
     string _sJobGrade;
     double _dHourlyPay;
 public:
-    int getID() { return iEmployeeID; };
-    void setID(string iEmployeeId) {_iEmployeeId = iEmployeeId;};
+    int getID() { return _iEmployeeId; };
+    void setID(int iEmployeeId) { _iEmployeeId = iEmployeeId; };
     string getName() { return _sFirstName + " " + _sLastName; };
     void setName(string sFirstName, string sLastName);
     string getDepartment() { return _sDepartment; };
@@ -29,12 +29,12 @@ public:
     void setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade, double dHourlyPay);
 };
 
-clsEmployee :: setName(string sFirstName, string sLastName) {
+void clsEmployee::setName(string sFirstName, string sLastName) {
     _sFirstName = sFirstName;
     _sLastName = sLastName;
 };
 
-clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade, double dHourlyPay) {
+void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade, double dHourlyPay) {
     _iEmployeeId = iEmployeeId;
     _sFirstName = sFirstName;
     _sLastName = sLastName;
@@ -80,19 +80,20 @@ public:
     void setProjectName(string sProjectName) { _sProjectName = sProjectName; };
     string getProjectName() { return _sProjectName; };
     void setProjectDurationDays(int iProjectDurationDays) { _iProjectDurationDays = iProjectDurationDays; };
-    int getProjectDurationDays() {return _iProjectDurationDays};
+    int getProjectDurationDays() { return _iProjectDurationDays; };
     void setProjectFee(double dProjectFee) { _dProjectFee = dProjectFee; };
     double getProjectFee() { return _dProjectFee; };
     void setProjectStatus(string sProjectStatus) { _sProjectStatus = sProjectStatus; };
     string getProjectStatus() { return _sProjectStatus; };
 };
+void startupScreen();
 
 int main()
 {
     cout << "Starting Program....\n";
     startupScreen();
-}
+};
 
 void startupScreen() {
     cout << "Working";
-}
+};
