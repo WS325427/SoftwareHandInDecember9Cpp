@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+.vs/ProjectSettings.json
+.vs/slnx.sqlite
+.vs/SoftwareHandInDecember9Cpp/v16/.suo
+.vs/SoftwareHandInDecember9Cpp/v16/Browse.VC.db
+.vs/VSWorkspaceState.json
+~$ftware Notes.docx
+~WRL0159.tmp
