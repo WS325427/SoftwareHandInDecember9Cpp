@@ -37,6 +37,8 @@ public:
     void setHourlyPay(double dHourlyPay) { _dHourlyPay = dHourlyPay; };
     void setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade,string sAssignedProject, double dHourlyPay);
     void setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade, string sAssignedProject, double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear);
+    double getHoursPerWeek() { return _dHoursPerWeek; };
+    int getWeeksPerYear() { return _iWeeksPerYear; };
 };
 
 void clsEmployee::setName(string sFirstName, string sLastName) {
@@ -44,7 +46,7 @@ void clsEmployee::setName(string sFirstName, string sLastName) {
     _sLastName = sLastName;
 };
 
-void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade, string sAssignedProject, double dHourlyPay) {
+void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sJobGrade, string sDepartment,  string sAssignedProject, double dHourlyPay) {
     _iEmployeeId = iEmployeeId;
     _sFirstName = sFirstName;
     _sLastName = sLastName;
@@ -53,7 +55,7 @@ void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLas
     _sAssignedProject = sAssignedProject;
     _dHourlyPay = dHourlyPay;
 }
-void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade, string sAssignedProject, double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear) {
+void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sJobGrade, string sDepartment, string sAssignedProject, double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear) {
     _iEmployeeId = iEmployeeId;
     _sFirstName = sFirstName;
     _sLastName = sLastName;
@@ -80,14 +82,15 @@ public:
     double calculateHourlyPay(double dSalary);
     int getWeeksPerYear() { return _iWeeksPerYear; };
     double getHoursPerWeek() { return _dHoursPerWeek; };
-
+    double calculateSalary(double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear);
 };
 
+double clsSalariedEmployee::calculateSalary(double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear) {
+    return dHourlyPay * dHoursPerWeek * iWeeksPerYear;
+}
 class clsContractEmployee : public clsEmployee {
 private:
     double _dTotalPay;
-    double _dHoursPerWeek;
-    int _iWeeksPerYear;
 public:
     void setTotalPay(double dTotalPay) { _dTotalPay = dTotalPay; };
     double getTotalPay() { return _dTotalPay; };
@@ -97,6 +100,9 @@ public:
     int getWeeksPerYear() { return _iWeeksPerYear; };
     double calculateTotalPay(double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear);
 };
+double clsContractEmployee::calculateTotalPay(double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear) {
+    return dHourlyPay * dHoursPerWeek * iWeeksPerYear;
+}
 class clsProject {
 private:
     string _sProjectName;
@@ -216,13 +222,13 @@ void startupScreenUserSelection(int *iUserChoice) {
 void viewFullStaffList() {
     vector <clsEmployee> vClsEmployee = readEmployeeCSV();
    // for (int i = 0; i < vClsEmployee.size(); i++) 
-    //supposedly a faster version of looping
     // i = 1;         vs              i = 1;
     // j = ++i;                      j = i++;
     // (i is 2, j is 2)             (i is 2, j is 1)
     clearScreen();
     cout << "This is the details of Staff currrently in the system" << endl;
     cout << "(best viewed on a larger screen)" << endl;
+    //supposedly a faster version of looping
         for (size_t i = 0, ilen = vClsEmployee.size(); i < ilen; ++i) {
                 cout << "Employee ID: " << vClsEmployee[i].getID() << "\t";
                 cout << "First Name: " << vClsEmployee[i].getFirstName() << "\t";
@@ -326,7 +332,7 @@ void addStaffConfirmation() {
     };
 };
 
-//could turn to vector for multiple additions to csv at once if time
+//NEED TO CLEAN UP THIS FUNCTION
 void collectStaffDetails() {
     clsSalariedEmployee clsAddSalariedEmployee;
     clsContractEmployee clsAddContractEmployee;
@@ -472,9 +478,58 @@ void updateStaffDetails() {
 
 //priority outpts requirements
 void breakdownEmployeeCosts() {
+    vector <clsEmployee> vClsEmployee;
     vector <clsContractEmployee> vClsContractEmployees;
     vector <clsSalariedEmployee> vClsSalariedEmployees;
-    FILL();
+    vClsEmployee = readEmployeeCSV();
+    int iSalariedEmployeeCount = 0, iContractedEmployeeCount = 0;
+    double dAllEmployeeSalary=0, dSeniorSalary=0, dJuniorSalary=0, dContractedWages=0;
+
+    for (size_t i = 0, ilen = vClsEmployee.size(); i < ilen; ++i) {
+        if (vClsEmployee[i].getJobGrade() == "Junior" || vClsEmployee[i].getJobGrade() == "Senior") {
+            vClsSalariedEmployees.push_back(clsSalariedEmployee());
+            //copy parent class to child class to access its functions, Note to self look into pointing methods
+            //maybe better to just not have subclasses in this set up
+            vClsSalariedEmployees[iSalariedEmployeeCount].setClsEmployee(vClsEmployee[i].getID(), vClsEmployee[i].getFirstName(), vClsEmployee[i].getLastName(), vClsEmployee[i].getJobGrade(), vClsEmployee[i].getDepartment(), vClsEmployee[i].getAssignedProject(), vClsEmployee[i].getHourlyPay(), vClsEmployee[i].getHoursPerWeek(), vClsEmployee[i].getWeeksPerYear());
+            iSalariedEmployeeCount++;
+        }
+        else if (vClsEmployee[i].getJobGrade() == "Contracted") {
+            vClsContractEmployees.push_back(clsContractEmployee());
+            //copy parent class to child class to access its functions, Note to self look into pointing methods
+            vClsContractEmployees[iContractedEmployeeCount].setClsEmployee(vClsEmployee[i].getID(), vClsEmployee[i].getFirstName(), vClsEmployee[i].getLastName(), vClsEmployee[i].getJobGrade(), vClsEmployee[i].getDepartment(), vClsEmployee[i].getAssignedProject(), vClsEmployee[i].getHourlyPay(), vClsEmployee[i].getHoursPerWeek(), vClsEmployee[i].getWeeksPerYear());
+            cout << vClsContractEmployees[iContractedEmployeeCount].getHoursPerWeek();
+            iContractedEmployeeCount++;
+            
+        };
+    };
+    //- Total amount of salary to the senior staff
+    //    - Total salary for the salaried staff
+    //    - Total wages for the contract staff
+    //    - Total payroll bill
+    for (size_t i = 0, ilen = vClsSalariedEmployees.size(); i < ilen; ++i) {
+        dAllEmployeeSalary += vClsSalariedEmployees[i].calculateSalary(vClsSalariedEmployees[i].getHourlyPay(), vClsSalariedEmployees[i].getHoursPerWeek(), vClsSalariedEmployees[i].getWeeksPerYear());
+        if (vClsSalariedEmployees[i].getJobGrade() == "Junior") {
+            dJuniorSalary += vClsSalariedEmployees[i].calculateSalary(vClsSalariedEmployees[i].getHourlyPay(), vClsSalariedEmployees[i].getHoursPerWeek(), vClsSalariedEmployees[i].getWeeksPerYear());
+        }
+        if (vClsSalariedEmployees[i].getJobGrade() == "Senior") {
+            dSeniorSalary+= vClsSalariedEmployees[i].calculateSalary(vClsSalariedEmployees[i].getHourlyPay(), vClsSalariedEmployees[i].getHoursPerWeek(), vClsSalariedEmployees[i].getWeeksPerYear());
+        }
+    };
+
+    for (size_t i = 0, ilen = vClsContractEmployees.size(); i < ilen; ++i) {
+        dContractedWages += vClsContractEmployees[i].calculateTotalPay(vClsContractEmployees[i].getHourlyPay(), vClsContractEmployees[i].getHoursPerWeek(), vClsContractEmployees[i].getWeeksPerYear());
+    };
+
+
+    cout << "\n\nThe total cost of JUNIOR salaried employees per year: " << char(156) << dJuniorSalary;
+    cout << "\nThe total cost of SENIOR salaried employees per year: " << char(156) << dSeniorSalary;
+    cout << "\nThe total cost of ALL salaried employees per year: " << char(156) << dAllEmployeeSalary;
+    cout << "\nThe total cost of CONTRACTED employees: " << char(156) << dContractedWages;
+    cout << "\nThe total PAYROLL Bills per year: " << char(156) << dContractedWages + dAllEmployeeSalary;
+
+    cout << "\nPress anykey to continue";
+    _getch();
+    startupScreen();
 };
 
 void viewProjectDetails() {
