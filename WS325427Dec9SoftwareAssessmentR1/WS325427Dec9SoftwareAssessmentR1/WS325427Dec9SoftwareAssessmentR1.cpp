@@ -16,6 +16,8 @@ protected:
     string _sJobGrade;
     string _sAssignedProject;
     double _dHourlyPay;
+    double _dHoursPerWeek;
+    int _iWeeksPerYear;
 public:
     int getID() { return _iEmployeeId; };
     void setID(int iEmployeeId) { _iEmployeeId = iEmployeeId; };
@@ -34,6 +36,7 @@ public:
     double getHourlyPay() { return _dHourlyPay; };
     void setHourlyPay(double dHourlyPay) { _dHourlyPay = dHourlyPay; };
     void setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade,string sAssignedProject, double dHourlyPay);
+    void setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade, string sAssignedProject, double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear);
 };
 
 void clsEmployee::setName(string sFirstName, string sLastName) {
@@ -50,11 +53,24 @@ void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLas
     _sAssignedProject = sAssignedProject;
     _dHourlyPay = dHourlyPay;
 }
+void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade, string sAssignedProject, double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear) {
+    _iEmployeeId = iEmployeeId;
+    _sFirstName = sFirstName;
+    _sLastName = sLastName;
+    _sDepartment = sDepartment;
+    _sJobGrade = sJobGrade;
+    _sAssignedProject = sAssignedProject;
+    _dHourlyPay = dHourlyPay;
+    _dHoursPerWeek = dHoursPerWeek;
+    _iWeeksPerYear = iWeeksPerYear;
+}
 
 class clsSalariedEmployee : public clsEmployee {
 private:
     double _dBonus;
     double _dSalary;
+    double _dHoursPerWeek = 40.0;
+    int _iWeeksPerYear = 52;
 public:
     void setBonus(double dBonus) { _dBonus = dBonus; };
     double getBonus() { return _dBonus; };
@@ -62,6 +78,9 @@ public:
     double getSalary() { return _dSalary; };
     double calculateBonus(double dSalary);
     double calculateHourlyPay(double dSalary);
+    int getWeeksPerYear() { return _iWeeksPerYear; };
+    double getHoursPerWeek() { return _dHoursPerWeek; };
+
 };
 
 class clsContractEmployee : public clsEmployee {
@@ -93,25 +112,39 @@ public:
     double getProjectFee() { return _dProjectFee; };
     void setProjectStatus(string sProjectStatus) { _sProjectStatus = sProjectStatus; };
     string getProjectStatus() { return _sProjectStatus; };
+    void setClsProject(string sProjectName, int iProjectDurationDays, double dProjectFee, string sProjectStatus);
 };
+
+void clsProject::setClsProject(string sProjectName, int iProjectDurationDays, double dProjectFee, string sProjectStatus) {
+    _sProjectName = sProjectName;
+    _iProjectDurationDays = iProjectDurationDays;
+    _dProjectFee = dProjectFee;
+    _sProjectStatus = sProjectStatus;
+}
+/// <prototypes>
+
 void startupScreen();
 void startupScreenUserSelection(int* iUserChoice);
 void clearScreen();
 int updateUserChoice(int* iUserChoice);
 void viewFullStaffList();
+vector <clsEmployee> readEmployeeCSV();
 void updateStaffListMenu();
 void updateStaffListChoice(int *iUserChoice);
 void breakdownEmployeeCosts();
 void viewProjectDetails();
+vector <clsProject> readProjectCSV();
 void updateProjectDetails();
 void addStaffConfirmation();
 void collectStaffDetails();
-void addToStaffCSV(clsEmployee* clsAddEmployee);
+void addToStaffCSV(clsSalariedEmployee* clsAddSalariedEmployee);
+void addToStaffCSV(clsContractEmployee* clsAddEmployee);
 void removeStaff();
 void updateStaffDetails();
 void exitProgram();
 void FILL();
 
+/// </prototypes>
 int main()
 {
     clearScreen();
@@ -181,40 +214,52 @@ void startupScreenUserSelection(int *iUserChoice) {
     };
 };
 void viewFullStaffList() {
- //Logic for viewing registered employee list
-    ifstream employeeData;
-    string sEmployeeId, sFirstName, sLastName, sGrade, sDepartment, sProject, sHourlyPay;
-    int iNumberOfStaff = 0;
-    employeeData.open("employeeData.csv");
-    if (employeeData.is_open())
-    {
-        clearScreen();
-        cout << "This is a detailed list of the company employees\n(best viewed on wide screen)\n";
-        while (getline(employeeData, sEmployeeId, ','))
-        {
-            cout << "Employee ID: " << sEmployeeId << "\t";
-            getline(employeeData, sFirstName, ',');
-            cout << "First Name: " << sFirstName << "\t";
-            getline(employeeData, sLastName, ',');
-            cout << "Last Name: " << sLastName << "\t";
-            getline(employeeData, sGrade, ',');
-            cout << "Job Grade: " << sGrade << "\t";
-            getline(employeeData, sDepartment, ',');
-            cout << "Department: " << sDepartment << "\t";
-            getline(employeeData, sProject, ',');
-            cout << "Project: " << sProject << "\t";
-            getline(employeeData, sHourlyPay, '\n');
-            cout << "Hourly Pay: " << char(156) << sHourlyPay << "\n";
-            //cout << sEmployeeId << "\t" << sFirstName << "\t" << sLastName << "\t" << sGrade << "\t" << sDepartment << "\t" << sProject << "\t" << sHourlyPay << "\n";
-            iNumberOfStaff++;
-        };
-        cout << "The total number of staff employed on Project: " << iNumberOfStaff << " people" << endl;
+    vector <clsEmployee> vClsEmployee = readEmployeeCSV();
+   // for (int i = 0; i < vClsEmployee.size(); i++) 
+    //supposedly a faster version of looping
+    // i = 1;         vs              i = 1;
+    // j = ++i;                      j = i++;
+    // (i is 2, j is 2)             (i is 2, j is 1)
+    clearScreen();
+    cout << "This is the details of Staff currrently in the system" << endl;
+    cout << "(best viewed on a larger screen)" << endl;
+        for (size_t i = 0, ilen = vClsEmployee.size(); i < ilen; ++i) {
+                cout << "Employee ID: " << vClsEmployee[i].getID() << "\t";
+                cout << "First Name: " << vClsEmployee[i].getFirstName() << "\t";
+                cout << "Last Name: " << vClsEmployee[i].getLastName() << "\t";
+                cout << "Job Grade: " << vClsEmployee[i].getJobGrade() << "\t";
+                cout << "Project: " << vClsEmployee[i].getAssignedProject() << "\t";
+                cout << "Hourly Pay: " << char(156) << vClsEmployee[i].getHourlyPay() << "\n";
     }
-    employeeData.close();
+    cout << "The total number of staff employed on Project: " << vClsEmployee.size()<< " people" << endl;
     cout << "\nPress any button to return to Project Management Screen";
     _getch();
     startupScreen();
 };
+
+vector <clsEmployee> readEmployeeCSV() {
+    ifstream employeeData;
+    vector <clsEmployee> vClsEmployee;
+    int iCount=0;
+    string sEmployeeId, sFirstName, sLastName, sGrade, sDepartment, sProject, sHourlyPay, sHoursPerWeek, sWeeksPerYear;
+    employeeData.open("employeeData.csv");
+
+    while (getline(employeeData, sEmployeeId, ',')) {
+        getline(employeeData, sFirstName, ',');
+        getline(employeeData, sLastName, ',');
+        getline(employeeData, sGrade, ',');
+        getline(employeeData, sDepartment, ',');
+        getline(employeeData, sProject, ',');
+        getline(employeeData, sHourlyPay, ',');
+        getline(employeeData, sHoursPerWeek, ',');
+        getline(employeeData, sWeeksPerYear, '\n');
+        vClsEmployee.push_back(clsEmployee());
+        vClsEmployee[iCount].setClsEmployee(stoi(sEmployeeId), sFirstName, sLastName, sGrade, sDepartment, sProject, stod(sHourlyPay), stod(sHoursPerWeek), stoi(sWeeksPerYear));
+        iCount++;
+    };
+    employeeData.close();
+    return vClsEmployee;
+}
 
 void updateStaffListMenu() {
     clearScreen();
@@ -283,10 +328,11 @@ void addStaffConfirmation() {
 
 //could turn to vector for multiple additions to csv at once if time
 void collectStaffDetails() {
-    clsEmployee clsAddEmployee;
-    int iEmployeeId, iUserChoice;
+    clsSalariedEmployee clsAddSalariedEmployee;
+    clsContractEmployee clsAddContractEmployee;
+    int iEmployeeId, iUserChoice, iWeeksPerYear;
     string sFirstName, sLastName,sDepartment,sJobGrade,sAssignedProject ="non-project";
-    double _dHourlyPay;
+    double dHourlyPay, dHoursPerWeek;
     cout << "Enter 6 Digit ID: ";
     cin >> iEmployeeId;
     cout << "Enter First Name: ";
@@ -318,6 +364,7 @@ void collectStaffDetails() {
         break;
     case 5:
         sDepartment = "Other";
+        break;
     default:
         cout << "\nError Inputs, Please try again\n";
         collectStaffDetails();
@@ -340,6 +387,10 @@ void collectStaffDetails() {
         break;
     case 3:
         sJobGrade = "Contracted";
+        cout << "\nHow many hours per week?(max 20): ";
+        cin >> dHoursPerWeek;
+        cout << "\nHow many weeks per year?(max30): ";
+        cin >> iWeeksPerYear;
         break;
     default:
         cout << "\nError Inputs, Please try again\n";
@@ -348,21 +399,42 @@ void collectStaffDetails() {
     }
 
     cout << "Enter hourly pay: "<<char(156);
-    cin >> _dHourlyPay;
-    clsAddEmployee.setClsEmployee(iEmployeeId, sFirstName, sLastName, sDepartment, sJobGrade, sAssignedProject, _dHourlyPay);
-    clearScreen();
-    cout << "6 digit Staff ID: "<<clsAddEmployee.getID()<<"\n";
-    cout << "Name: "<<clsAddEmployee.getName()<<"\n";
-    cout << "Job Grade: "<<clsAddEmployee.getJobGrade()<<"\n";
-    cout << "Department: "<<clsAddEmployee.getDepartment()<<"\n";
-    cout << "Assigned Project: "<<clsAddEmployee.getAssignedProject()<<"\n";
-    cout << "Hourly Pay: " << char(156) <<clsAddEmployee.getHourlyPay(); "\n";
+    cin >> dHourlyPay;
+    if (sJobGrade == "Senior" || sJobGrade == "Junior") {
+        clsAddSalariedEmployee.setClsEmployee(iEmployeeId, sFirstName, sLastName, sDepartment, sJobGrade, sAssignedProject, dHourlyPay);
+        clearScreen();
+        //could imporove by adding getDetails() if time;
+        cout << "6 digit Staff ID: " << clsAddSalariedEmployee.getID() << "\n";
+        cout << "Name: " << clsAddSalariedEmployee.getName() << "\n";
+        cout << "Job Grade: " << clsAddSalariedEmployee.getJobGrade() << "\n";
+        cout << "Department: " << clsAddSalariedEmployee.getDepartment() << "\n";
+        cout << "Hourly Pay: " << char(156) << clsAddSalariedEmployee.getHourlyPay() << "\n";
+    }
+    else if (sJobGrade == "Contracted") {
+        clsAddContractEmployee.setClsEmployee(iEmployeeId, sFirstName, sLastName, sDepartment, sJobGrade, sAssignedProject, dHourlyPay);
+        clsAddContractEmployee.setHoursPerWeek(dHoursPerWeek);
+        clsAddContractEmployee.setWeekPerYear(iWeeksPerYear);
+        clearScreen();
+        cout << "6 digit Staff ID: " << clsAddContractEmployee.getID() << "\n";
+        cout << "Name: " << clsAddContractEmployee.getName() << "\n";
+        cout << "Job Grade: " << clsAddContractEmployee.getJobGrade() << "\n";
+        cout << "Department: " << clsAddContractEmployee.getDepartment() << "\n";
+        cout << "Hourly Pay: " << char(156) << clsAddContractEmployee.getHourlyPay() <<"\n";
+        cout << "Hours Per Week: " << clsAddContractEmployee.getHoursPerWeek() << "\n";
+        cout << "Weeks Per Year: " << clsAddContractEmployee.getWeeksPerYear() << "\n";
+    };
+
     cout << "\nConfirm Details:  1) Yes   2) Cancel(return to Project Management Screen) (select number)\n";
     cin >> iUserChoice;
     switch (iUserChoice)
     {
     case 1:
-        addToStaffCSV(&clsAddEmployee);
+        if (sJobGrade == "Senior" || sJobGrade == "Junior") {
+            addToStaffCSV(&clsAddSalariedEmployee);
+        }
+        else if (sJobGrade == "Contracted") {
+            addToStaffCSV(&clsAddContractEmployee);
+        }
         break;
     case 2:
         cout << "Returning back to the Project Management Menu";
@@ -373,28 +445,65 @@ void collectStaffDetails() {
         collectStaffDetails();
     };
 };
-void addToStaffCSV(clsEmployee* clsAddEmployee) {
+void addToStaffCSV(clsSalariedEmployee* clsAddSalariedEmployee) {
     ofstream employeeData;
     employeeData.open("employeeData.csv", ios::app);
-    employeeData << clsAddEmployee->getID() << "," << clsAddEmployee->getFirstName() << "," << clsAddEmployee->getLastName() << "," << clsAddEmployee->getJobGrade() << "," << clsAddEmployee->getDepartment() << "," << clsAddEmployee->getAssignedProject() << "," << clsAddEmployee->getHourlyPay() << endl;
+    employeeData << clsAddSalariedEmployee->getID() << "," << clsAddSalariedEmployee->getFirstName() << "," << clsAddSalariedEmployee->getLastName() << "," << clsAddSalariedEmployee->getJobGrade() << "," << clsAddSalariedEmployee->getDepartment() << "," << clsAddSalariedEmployee->getAssignedProject() << "," << clsAddSalariedEmployee->getHourlyPay() << "," << clsAddSalariedEmployee->getHoursPerWeek() << "," << clsAddSalariedEmployee->getWeeksPerYear() << endl;
     employeeData.close();
     cout << "\nSUCCESSFUL\n";
     startupScreen();
 };
+
+void addToStaffCSV(clsContractEmployee* clsAddContractEmployee) {
+    ofstream employeeData;
+    employeeData.open("employeeData.csv", ios::app);
+    employeeData << clsAddContractEmployee->getID() << "," << clsAddContractEmployee->getFirstName() << "," << clsAddContractEmployee->getLastName() << "," << clsAddContractEmployee->getJobGrade() << "," << clsAddContractEmployee->getDepartment() << "," << clsAddContractEmployee->getAssignedProject() << "," << clsAddContractEmployee->getHourlyPay() << "," << clsAddContractEmployee->getHoursPerWeek() << "," << clsAddContractEmployee->getWeeksPerYear() << endl;
+    employeeData.close();
+    cout << "\nSUCCESSFUL\n";
+    startupScreen();
+};
+
 void removeStaff() {
     FILL();
 };
 void updateStaffDetails() {
     FILL();
 };
+
+//priority outpts requirements
 void breakdownEmployeeCosts() {
+    vector <clsContractEmployee> vClsContractEmployees;
+    vector <clsSalariedEmployee> vClsSalariedEmployees;
     FILL();
 };
-void viewProjectDetails() {
 
+void viewProjectDetails() {
+    vector <clsProject> vClsProjectData = readProjectCSV();
+    int iOpenProjectCount = 0, iClosedProjectCount=0;
+    for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
+        cout << "Project Name: " << vClsProjectData[i].getProjectName() << "\t";
+        cout << "Project Duration(Days): " << vClsProjectData[i].getProjectDurationDays()<< "\t";
+        cout << "Project Fee: " << char(156) << vClsProjectData[i].getProjectFee() << "\t";
+        cout << "Project Status: " << vClsProjectData[i].getProjectStatus() << "\n";
+        if (vClsProjectData[i].getProjectStatus() == "open") {
+            iOpenProjectCount++;
+        }
+        if (vClsProjectData[i].getProjectStatus() == "closed") {
+            iClosedProjectCount++;
+        }
+    }
+        cout << "The total number projects ongoing: " << iOpenProjectCount << " projects" << endl;
+        cout << "The total number projects closed: " << iClosedProjectCount << " projects" << endl;
+
+    cout << "\nPress any button to return to Project Management Screen";
+    _getch();
+    startupScreen();
+};
+vector <clsProject> readProjectCSV() {
     ifstream projectData;
+    vector <clsProject> vClsProjectData;
     string sProjectName, sProjectDurationDays, sProjectFee, sProjectStatus;
-    int iNumberOfProjects = 0;
+    int i = 0;
     projectData.open("projectData.csv");
     if (projectData.is_open())
     {
@@ -403,21 +512,15 @@ void viewProjectDetails() {
             getline(projectData, sProjectDurationDays, ',');
             getline(projectData, sProjectFee, ',');
             getline(projectData, sProjectStatus, '\n');
-            if (sProjectStatus == "open") {
-                cout << "Project Name: " << sProjectName << "\t";
-                cout << "Project Duration(Days): " << sProjectDurationDays << "\t";
-                cout << "Project Fee: " << char(156) << sProjectFee << "\t";
-                cout << "Project Status: " << sProjectStatus << "\n";
-                iNumberOfProjects++;
-            }
+            vClsProjectData.push_back(clsProject());
+            vClsProjectData[i].setClsProject(sProjectName, stoi(sProjectDurationDays), stod(sProjectFee), sProjectStatus);
+            i++;
         };
-        cout << "The total number projects ongoing: " << iNumberOfProjects << " people" << endl;
     }
     projectData.close();
-    cout << "\nPress any button to return to Project Management Screen";
-    _getch();
-    startupScreen();
+    return vClsProjectData;
 };
+
 
 void updateProjectDetails() {
     FILL();
