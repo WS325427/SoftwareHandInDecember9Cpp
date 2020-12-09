@@ -135,6 +135,8 @@ void clearScreen();
 int updateUserChoice(int* iUserChoice);
 void viewFullStaffList();
 vector <clsEmployee> readEmployeeCSV();
+vector <clsSalariedEmployee> filteredSalariedEmployeesCSV();
+vector <clsContractEmployee> filteredContractedEmployeesCSV();
 void updateStaffListMenu();
 void updateStaffListChoice(int *iUserChoice);
 void breakdownEmployeeCosts();
@@ -162,9 +164,10 @@ int main()
 };
 
 int updateUserChoice(int* iUserChoice) {
-    //Allows for positive integers to be returned
+    //Allows for positive integers only to be returned
     int iOption;
     cin >> iOption;
+    //be careful with !cin?
     while (!cin || iOption < 0)
     {
         cout << "Invalid Integer, Try Again!\n ";
@@ -237,6 +240,7 @@ void viewFullStaffList() {
                 cout << "Project: " << vClsEmployee[i].getAssignedProject() << "\t";
                 cout << "Hourly Pay: " << char(156) << vClsEmployee[i].getHourlyPay() << "\n";
     }
+        // nts, formatting could do work, maybe force a max character limit and always hit it to keep things spaced evenly
     cout << "The total number of staff employed on Project: " << vClsEmployee.size()<< " people" << endl;
     cout << "\nPress any button to return to Project Management Screen";
     _getch();
@@ -266,6 +270,41 @@ vector <clsEmployee> readEmployeeCSV() {
     employeeData.close();
     return vClsEmployee;
 }
+
+vector <clsSalariedEmployee> filteredSalariedEmployeesCSV() {
+    vector <clsEmployee> vClsEmployee;
+    vector <clsSalariedEmployee> vClsSalariedEmployees;
+    vClsEmployee = readEmployeeCSV();
+    int iSalariedEmployeeCount = 0;
+
+    for (size_t i = 0, ilen = vClsEmployee.size(); i < ilen; ++i) {
+        if (vClsEmployee[i].getJobGrade() == "Junior" || vClsEmployee[i].getJobGrade() == "Senior") {
+            vClsSalariedEmployees.push_back(clsSalariedEmployee());
+            //copy parent class to child class to access its functions, Note to self look into pointing methods
+            //maybe better to just not have subclasses in this set up
+            vClsSalariedEmployees[iSalariedEmployeeCount].setClsEmployee(vClsEmployee[i].getID(), vClsEmployee[i].getFirstName(), vClsEmployee[i].getLastName(), vClsEmployee[i].getJobGrade(), vClsEmployee[i].getDepartment(), vClsEmployee[i].getAssignedProject(), vClsEmployee[i].getHourlyPay(), vClsEmployee[i].getHoursPerWeek(), vClsEmployee[i].getWeeksPerYear());
+            iSalariedEmployeeCount++;
+        }
+    };
+    return vClsSalariedEmployees;
+};
+vector <clsContractEmployee> filteredContractedEmployeesCSV() {
+    vector <clsEmployee> vClsEmployee;
+    vector <clsContractEmployee> vClsContractEmployees;
+    vClsEmployee = readEmployeeCSV();
+    int iContractedEmployeeCount = 0;
+
+    for (size_t i = 0, ilen = vClsEmployee.size(); i < ilen; ++i) {
+        if (vClsEmployee[i].getJobGrade() == "Contracted"){
+            vClsContractEmployees.push_back(clsContractEmployee());
+            //copy parent class to child class to access its functions, Note to self look into pointing methods
+            vClsContractEmployees[iContractedEmployeeCount].setClsEmployee(vClsEmployee[i].getID(), vClsEmployee[i].getFirstName(), vClsEmployee[i].getLastName(), vClsEmployee[i].getJobGrade(), vClsEmployee[i].getDepartment(), vClsEmployee[i].getAssignedProject(), vClsEmployee[i].getHourlyPay(), vClsEmployee[i].getHoursPerWeek(), vClsEmployee[i].getWeeksPerYear());
+            iContractedEmployeeCount++;
+        };
+    };
+    return vClsContractEmployees;
+};
+
 
 void updateStaffListMenu() {
     clearScreen();
@@ -407,9 +446,9 @@ void collectStaffDetails() {
     cout << "Enter hourly pay: "<<char(156);
     cin >> dHourlyPay;
     if (sJobGrade == "Senior" || sJobGrade == "Junior") {
-        clsAddSalariedEmployee.setClsEmployee(iEmployeeId, sFirstName, sLastName, sDepartment, sJobGrade, sAssignedProject, dHourlyPay);
+        clsAddSalariedEmployee.setClsEmployee(iEmployeeId, sFirstName, sLastName, sJobGrade, sDepartment, sAssignedProject, dHourlyPay);
         clearScreen();
-        //could imporove by adding getDetails() if time;
+
         cout << "6 digit Staff ID: " << clsAddSalariedEmployee.getID() << "\n";
         cout << "Name: " << clsAddSalariedEmployee.getName() << "\n";
         cout << "Job Grade: " << clsAddSalariedEmployee.getJobGrade() << "\n";
@@ -417,7 +456,7 @@ void collectStaffDetails() {
         cout << "Hourly Pay: " << char(156) << clsAddSalariedEmployee.getHourlyPay() << "\n";
     }
     else if (sJobGrade == "Contracted") {
-        clsAddContractEmployee.setClsEmployee(iEmployeeId, sFirstName, sLastName, sDepartment, sJobGrade, sAssignedProject, dHourlyPay);
+        clsAddContractEmployee.setClsEmployee(iEmployeeId, sFirstName, sLastName, sJobGrade, sDepartment, sAssignedProject, dHourlyPay);
         clsAddContractEmployee.setHoursPerWeek(dHoursPerWeek);
         clsAddContractEmployee.setWeekPerYear(iWeeksPerYear);
         clearScreen();
@@ -451,12 +490,16 @@ void collectStaffDetails() {
         collectStaffDetails();
     };
 };
+
+//repeated for different intake of staff grade
 void addToStaffCSV(clsSalariedEmployee* clsAddSalariedEmployee) {
     ofstream employeeData;
     employeeData.open("employeeData.csv", ios::app);
     employeeData << clsAddSalariedEmployee->getID() << "," << clsAddSalariedEmployee->getFirstName() << "," << clsAddSalariedEmployee->getLastName() << "," << clsAddSalariedEmployee->getJobGrade() << "," << clsAddSalariedEmployee->getDepartment() << "," << clsAddSalariedEmployee->getAssignedProject() << "," << clsAddSalariedEmployee->getHourlyPay() << "," << clsAddSalariedEmployee->getHoursPerWeek() << "," << clsAddSalariedEmployee->getWeeksPerYear() << endl;
     employeeData.close();
     cout << "\nSUCCESSFUL\n";
+    cout << "\nPress any button to continue";
+    _getch();
     startupScreen();
 };
 
@@ -466,6 +509,8 @@ void addToStaffCSV(clsContractEmployee* clsAddContractEmployee) {
     employeeData << clsAddContractEmployee->getID() << "," << clsAddContractEmployee->getFirstName() << "," << clsAddContractEmployee->getLastName() << "," << clsAddContractEmployee->getJobGrade() << "," << clsAddContractEmployee->getDepartment() << "," << clsAddContractEmployee->getAssignedProject() << "," << clsAddContractEmployee->getHourlyPay() << "," << clsAddContractEmployee->getHoursPerWeek() << "," << clsAddContractEmployee->getWeeksPerYear() << endl;
     employeeData.close();
     cout << "\nSUCCESSFUL\n";
+    cout << "\nPress any button to continue";
+    _getch();
     startupScreen();
 };
 
@@ -478,48 +523,29 @@ void updateStaffDetails() {
 
 //priority outpts requirements
 void breakdownEmployeeCosts() {
-    vector <clsEmployee> vClsEmployee;
-    vector <clsContractEmployee> vClsContractEmployees;
-    vector <clsSalariedEmployee> vClsSalariedEmployees;
-    vClsEmployee = readEmployeeCSV();
-    int iSalariedEmployeeCount = 0, iContractedEmployeeCount = 0;
+    vector <clsContractEmployee> vClsContractEmployeesData = filteredContractedEmployeesCSV();
+    vector <clsSalariedEmployee> vClsSalariedEmployeesData = filteredSalariedEmployeesCSV();
     double dAllEmployeeSalary=0, dSeniorSalary=0, dJuniorSalary=0, dContractedWages=0;
-
-    for (size_t i = 0, ilen = vClsEmployee.size(); i < ilen; ++i) {
-        if (vClsEmployee[i].getJobGrade() == "Junior" || vClsEmployee[i].getJobGrade() == "Senior") {
-            vClsSalariedEmployees.push_back(clsSalariedEmployee());
-            //copy parent class to child class to access its functions, Note to self look into pointing methods
-            //maybe better to just not have subclasses in this set up
-            vClsSalariedEmployees[iSalariedEmployeeCount].setClsEmployee(vClsEmployee[i].getID(), vClsEmployee[i].getFirstName(), vClsEmployee[i].getLastName(), vClsEmployee[i].getJobGrade(), vClsEmployee[i].getDepartment(), vClsEmployee[i].getAssignedProject(), vClsEmployee[i].getHourlyPay(), vClsEmployee[i].getHoursPerWeek(), vClsEmployee[i].getWeeksPerYear());
-            iSalariedEmployeeCount++;
-        }
-        else if (vClsEmployee[i].getJobGrade() == "Contracted") {
-            vClsContractEmployees.push_back(clsContractEmployee());
-            //copy parent class to child class to access its functions, Note to self look into pointing methods
-            vClsContractEmployees[iContractedEmployeeCount].setClsEmployee(vClsEmployee[i].getID(), vClsEmployee[i].getFirstName(), vClsEmployee[i].getLastName(), vClsEmployee[i].getJobGrade(), vClsEmployee[i].getDepartment(), vClsEmployee[i].getAssignedProject(), vClsEmployee[i].getHourlyPay(), vClsEmployee[i].getHoursPerWeek(), vClsEmployee[i].getWeeksPerYear());
-            cout << vClsContractEmployees[iContractedEmployeeCount].getHoursPerWeek();
-            iContractedEmployeeCount++;
-            
-        };
-    };
     //- Total amount of salary to the senior staff
     //    - Total salary for the salaried staff
     //    - Total wages for the contract staff
     //    - Total payroll bill
-    for (size_t i = 0, ilen = vClsSalariedEmployees.size(); i < ilen; ++i) {
-        dAllEmployeeSalary += vClsSalariedEmployees[i].calculateSalary(vClsSalariedEmployees[i].getHourlyPay(), vClsSalariedEmployees[i].getHoursPerWeek(), vClsSalariedEmployees[i].getWeeksPerYear());
-        if (vClsSalariedEmployees[i].getJobGrade() == "Junior") {
-            dJuniorSalary += vClsSalariedEmployees[i].calculateSalary(vClsSalariedEmployees[i].getHourlyPay(), vClsSalariedEmployees[i].getHoursPerWeek(), vClsSalariedEmployees[i].getWeeksPerYear());
+
+    //salaried calculations
+    for (size_t i = 0, ilen = vClsSalariedEmployeesData.size(); i < ilen; ++i) {
+        dAllEmployeeSalary += vClsSalariedEmployeesData[i].calculateSalary(vClsSalariedEmployeesData[i].getHourlyPay(), vClsSalariedEmployeesData[i].getHoursPerWeek(), vClsSalariedEmployeesData[i].getWeeksPerYear());
+        if (vClsSalariedEmployeesData[i].getJobGrade() == "Junior") {
+            dJuniorSalary += vClsSalariedEmployeesData[i].calculateSalary(vClsSalariedEmployeesData[i].getHourlyPay(), vClsSalariedEmployeesData[i].getHoursPerWeek(), vClsSalariedEmployeesData[i].getWeeksPerYear());
         }
-        if (vClsSalariedEmployees[i].getJobGrade() == "Senior") {
-            dSeniorSalary+= vClsSalariedEmployees[i].calculateSalary(vClsSalariedEmployees[i].getHourlyPay(), vClsSalariedEmployees[i].getHoursPerWeek(), vClsSalariedEmployees[i].getWeeksPerYear());
+        if (vClsSalariedEmployeesData[i].getJobGrade() == "Senior") {
+            dSeniorSalary+= vClsSalariedEmployeesData[i].calculateSalary(vClsSalariedEmployeesData[i].getHourlyPay(), vClsSalariedEmployeesData[i].getHoursPerWeek(), vClsSalariedEmployeesData[i].getWeeksPerYear());
         }
     };
 
-    for (size_t i = 0, ilen = vClsContractEmployees.size(); i < ilen; ++i) {
-        dContractedWages += vClsContractEmployees[i].calculateTotalPay(vClsContractEmployees[i].getHourlyPay(), vClsContractEmployees[i].getHoursPerWeek(), vClsContractEmployees[i].getWeeksPerYear());
+    //contracted calculations
+    for (size_t i = 0, ilen = vClsContractEmployeesData.size(); i < ilen; ++i) {
+        dContractedWages += vClsContractEmployeesData[i].calculateTotalPay(vClsContractEmployeesData[i].getHourlyPay(), vClsContractEmployeesData[i].getHoursPerWeek(), vClsContractEmployeesData[i].getWeeksPerYear());
     };
-
 
     cout << "\n\nThe total cost of JUNIOR salaried employees per year: " << char(156) << dJuniorSalary;
     cout << "\nThe total cost of SENIOR salaried employees per year: " << char(156) << dSeniorSalary;
@@ -532,14 +558,49 @@ void breakdownEmployeeCosts() {
     startupScreen();
 };
 
+
+
 void viewProjectDetails() {
     vector <clsProject> vClsProjectData = readProjectCSV();
-    int iOpenProjectCount = 0, iClosedProjectCount=0;
+    vector <clsSalariedEmployee> vClsSalariedEmployeeData = filteredSalariedEmployeesCSV();
+    vector <clsContractEmployee> vClsContractedEmployeeData = filteredContractedEmployeesCSV();
+    int iOpenProjectCount = 0, iClosedProjectCount=0, daysPerWeek = 7, workDaysPerWeek = 5, daysInYear = 365;
+    //assume project duration is in work days
+    clearScreen();
+    cout << "This is the Project Details with fee available and cost from employees (vest viewed on large screen)\n\n";
     for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
+        double dProjectCost = 0, dProjectCostOverBudgetMax, dProjectCostOverBudgetMin;
+        //need to calculate cost of salaried employees for project
+        for (size_t j = 0, ilen = vClsSalariedEmployeeData.size(); j < ilen; ++j) {
+            if (vClsSalariedEmployeeData[j].getAssignedProject() == vClsProjectData[i].getProjectName()) {
+                //project cost = salary * projectduration(days)/days in year(365)
+                dProjectCost += vClsSalariedEmployeeData[j].calculateSalary(vClsSalariedEmployeeData[j].getHourlyPay(), vClsSalariedEmployeeData[j].getHoursPerWeek(), vClsSalariedEmployeeData[j].getWeeksPerYear())*(vClsProjectData[i].getProjectDurationDays()/daysInYear);
+            };
+        };
+        //need to calculate cost of contracted employees for project
+        for (size_t j = 0, ilen = vClsContractedEmployeeData.size(); j < ilen; ++j) {
+            if (vClsContractedEmployeeData[j].getAssignedProject() == vClsProjectData[i].getProjectName()) {
+                //if the numbers of contracted weeks is longer than duration of project weeks, calculate the maximum time paid on project as the duration of the project instead
+                if (vClsContractedEmployeeData[j].getWeeksPerYear() > vClsProjectData[i].getProjectDurationDays()/workDaysPerWeek) {
+                    vClsContractedEmployeeData[j].setWeekPerYear(vClsProjectData[i].getProjectDurationDays() / workDaysPerWeek);
+                };
+                dProjectCost += vClsContractedEmployeeData[j].calculateTotalPay(vClsContractedEmployeeData[j].getHourlyPay(), vClsContractedEmployeeData[j].getHoursPerWeek(), vClsContractedEmployeeData[j].getWeeksPerYear());
+            };
+        };
+        dProjectCostOverBudgetMax = dProjectCost * 1.35;
+        dProjectCostOverBudgetMin = dProjectCost * 1.1;
+
+
         cout << "Project Name: " << vClsProjectData[i].getProjectName() << "\t";
         cout << "Project Duration(Days): " << vClsProjectData[i].getProjectDurationDays()<< "\t";
         cout << "Project Fee: " << char(156) << vClsProjectData[i].getProjectFee() << "\t";
-        cout << "Project Status: " << vClsProjectData[i].getProjectStatus() << "\n";
+        cout << "Project Status: " << vClsProjectData[i].getProjectStatus() << "\t";
+        cout << "Project Cost: " << char(156) << dProjectCost<<"\t";
+        cout << "OverBudget Cost 10%: " << char(156) << dProjectCostOverBudgetMin << "\t";
+        cout << "OverBudget Cost 35%: " << char(156) << dProjectCostOverBudgetMax << "\n";
+        cout << "Remaining Project Budget (10%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMin << "\t";
+        cout << "Remaining Project Budget (35%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMax<< "\n\n";
+
         if (vClsProjectData[i].getProjectStatus() == "open") {
             iOpenProjectCount++;
         }
