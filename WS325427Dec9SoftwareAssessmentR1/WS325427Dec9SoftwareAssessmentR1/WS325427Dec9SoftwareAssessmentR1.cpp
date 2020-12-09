@@ -146,7 +146,9 @@ void addStaffConfirmation();
 void collectStaffDetails();
 void addToStaffCSV(std::vector <clsSalariedEmployee> clsAddSalariedEmployee);
 void addToStaffCSV(std::vector <clsContractEmployee> clsAddContractEmployee);
+void overwriteToStaffCSV(std::vector <clsEmployee> vClsAddEmployee);
 void removeStaff();
+std::string inputMatchingProjectName(std::vector <clsProject> vClsProjectData);
 void updateStaffDetails();
 void exitProgram();
 void FILL();
@@ -183,8 +185,8 @@ void startupScreen() {
     std::cout << "Welcome to the Project Management Menu\nWhat would you like to do?\n";
     std::cout << "   1)  View Full Staff on Project List\n";
     std::cout << "   2)	Update Staff List\n";
-    std::cout << "   3)	Total Cost and Breakdown Costs of Employees \n";
-    std::cout << "   4)	View Active Projects details\n";
+    std::cout << "   3)	Total Cost and Breakdown Costs of Company \n";
+    std::cout << "   4)	View Projects details\n";
     std::cout << "   5)	Update Projects\n";
     std::cout << "   6)	Exit Program\n";
     std::cout << "Enter Choice Number: ";
@@ -448,20 +450,7 @@ void collectStaffDetails() {
     switch (updateUserChoice(&iUserChoice))
     {
     case 1:
-
-        std::cout << "Current Projects Available:\n";
-        for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
-            std::cout << i+1<<") "<<vClsProjectData[i].getProjectName()<<"\n";
-        }
-        std::cout << "Please type the assigned project(case sensitive)\n";
-        std::cin >> sAssignedProject;
-        for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
-            if(sAssignedProject == vClsProjectData[i].getProjectName());
-            bFoundMatch = true;
-        }
-        if (!bFoundMatch) {
-            std::cout << "No match, will now default to non-project\n";
-        }
+        sAssignedProject = inputMatchingProjectName(vClsProjectData);
         break;
     default:
         break;
@@ -549,18 +538,119 @@ void addToStaffCSV(std::vector <clsContractEmployee> clsAddContractEmployee) {
     startupScreen();
 };
 
+void overwriteToStaffCSV(std::vector <clsEmployee> vClsAddEmployee) {
+    std::ofstream employeeData;
+
+    employeeData.open("employeeData.csv");
+    for (size_t i = 0, ilen = vClsAddEmployee.size(); i < ilen; ++i) {
+        employeeData << vClsAddEmployee[i].getID() << "," << vClsAddEmployee[i].getFirstName() << "," << vClsAddEmployee[i].getLastName() << "," << vClsAddEmployee[i].getJobGrade() << "," << vClsAddEmployee[i].getDepartment() << "," << vClsAddEmployee[i].getAssignedProject() << "," << vClsAddEmployee[i].getHourlyPay() << "," << vClsAddEmployee[i].getHoursPerWeek() << "," << vClsAddEmployee[i].getWeeksPerYear() << std::endl;
+    }
+    employeeData.close();
+    std::cout << "\nSUCCESSFUL\n";
+    std::cout << "\nPress any button to continue";
+    _getch();
+    startupScreen();
+};
+
 void removeStaff() {
     FILL();
 };
+
+std::string inputMatchingProjectName(std::vector <clsProject> vClsProjectData) {
+    bool bFoundMatch = false;
+    std::string sAssignedProjectInput;
+    std::cout << "Current Projects Available:\n";
+    for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
+        std::cout << i + 1 << ") " << vClsProjectData[i].getProjectName() << "\n";
+    }
+    std::cout << "Please type the assigned project(case sensitive)\n";
+    std::cin >> sAssignedProjectInput;
+    for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
+        if (sAssignedProjectInput == vClsProjectData[i].getProjectName()) {
+            bFoundMatch = true;
+            std::cout << "Succesfully Found Project  Click a button to continue\n";
+            _getch();
+            break;
+        };
+    }
+    if (!bFoundMatch)
+    {
+        std::cout << "No matching project name.  Will now default to non-project.  Click a button to continue\n";
+        sAssignedProjectInput = "non-project";
+        _getch();
+    }
+    return sAssignedProjectInput;
+}
 void updateStaffDetails() {
-    FILL();
+    std::vector <clsEmployee> vClsEmployeeData = readEmployeeCSV();
+    std::vector <clsProject> vClsProjectData = readProjectCSV();
+    int iStaffId, iUserChoice;
+    double dUpdatedHourlyPay;
+    bool bFoundMatch = false, bUpdatedData = false;
+    std::string sAssignedProjectInput;
+    std::cout << "Please Enter the 6-digit ID of the staff you'd like to udpate: ";
+    std::cin >> iStaffId;
+    std::cout << "\nSearching........\n";
+    for (size_t i = 0, ilen = vClsEmployeeData.size(); i < ilen; ++i) {
+        if (vClsEmployeeData[i].getID() == iStaffId) {
+            std::cout << "\n\n\Found!\n";
+            bFoundMatch = true;
+            std::cout << "Employee ID: " << vClsEmployeeData[i].getID() << "\n";
+            std::cout << "First Name: " << vClsEmployeeData[i].getFirstName() << "\n";
+            std::cout << "Last Name: " << vClsEmployeeData[i].getLastName() << "\n";
+            std::cout << "Job Grade: " << vClsEmployeeData[i].getJobGrade() << "\n";
+            std::cout << "Project: " << vClsEmployeeData[i].getAssignedProject() << "\n";
+            std::cout << std::fixed << std::setprecision(2) << "Hourly Pay: " << char(156) << vClsEmployeeData[i].getHourlyPay() << "\n";
+            std::cout << "Press a button to continue...";
+            _getch();
+            std::cout << "\n\n\nWhat would you like to update?\n";
+            std::cout << "1) Project\n";
+            std::cout << "2) Hourly Pay\n";
+            switch (updateUserChoice(&iUserChoice))
+            {
+            case 1:
+                sAssignedProjectInput = inputMatchingProjectName(vClsProjectData);
+                vClsEmployeeData[i].setAssignedProject(sAssignedProjectInput);
+                bUpdatedData = true;
+                break;
+            case 2:
+                std::cout << "Please enter a new hourly pay: " << char(156);
+                std::cin >> dUpdatedHourlyPay;
+                vClsEmployeeData[i].setHourlyPay(dUpdatedHourlyPay);
+                bUpdatedData = true;
+                break;
+            default:
+                std::cout << "Not a valid option... will now return to Update Menu Staff.  Press a button to continue.";
+                _getch();
+                updateStaffListMenu();
+                break;
+            }
+            if(bUpdatedData) {
+                overwriteToStaffCSV(vClsEmployeeData);
+                std::cout << "Update Successful!  Returning to Staff Uppdate Menu.  Press a button to continue";
+                updateStaffListMenu();
+                break;
+            }
+            _getch();
+        }
+    }
+    if (!bFoundMatch) {
+        std::cout << "No matching staff. Returning to Update Staff Menu.  Press a button to continue\n";
+        _getch();
+        updateStaffListMenu();
+    }
+
 };
+
+
+
 
 //priority outpts requirements
 void breakdownEmployeeCosts() {
     std::vector <clsContractEmployee> vClsContractEmployeesData = filteredContractedEmployeesCSV();
     std::vector <clsSalariedEmployee> vClsSalariedEmployeesData = filteredSalariedEmployeesCSV();
-    double dAllEmployeeSalary=0, dSeniorSalary=0, dJuniorSalary=0, dContractedWages=0;
+    std::vector <clsProject>  vClsProjectData = readProjectCSV();
+    double dAllEmployeeSalary = 0, dSeniorSalary = 0, dJuniorSalary = 0, dContractedWages = 0, dProjectFeeGenerated=0;
     //- Total amount of salary to the senior staff
     //    - Total salary for the salaried staff
     //    - Total wages for the contract staff
@@ -582,11 +672,17 @@ void breakdownEmployeeCosts() {
         dContractedWages += vClsContractEmployeesData[i].calculateTotalPay(vClsContractEmployeesData[i].getHourlyPay(), vClsContractEmployeesData[i].getHoursPerWeek(), vClsContractEmployeesData[i].getWeeksPerYear());
     };
 
-    std::cout << "\n\nThe total cost of JUNIOR salaried employees per year: " << char(156) << dJuniorSalary;
-    std::cout << "\nThe total cost of SENIOR salaried employees per year: " << char(156) << dSeniorSalary;
-    std::cout << "\nThe total cost of ALL salaried employees per year: " << char(156) << dAllEmployeeSalary;
-    std::cout << "\nThe total cost of CONTRACTED employees: " << char(156) << dContractedWages;
-    std::cout << "\nThe total PAYROLL Bills per year: " << char(156) << dContractedWages + dAllEmployeeSalary;
+    for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
+        dProjectFeeGenerated += vClsProjectData[i].getProjectFee();
+    };
+
+    std::cout << std::fixed << std::setprecision(2) << "\n\nThe total cost of JUNIOR salaried employees per year: " << char(156) << dJuniorSalary;
+    std::cout << std::fixed << std::setprecision(2) << "\nThe total cost of SENIOR salaried employees per year: " << char(156) << dSeniorSalary;
+    std::cout << std::fixed << std::setprecision(2) << "\nThe total cost of ALL salaried employees per year: " << char(156) << dAllEmployeeSalary;
+    std::cout << std::fixed << std::setprecision(2) << "\nThe total cost of CONTRACTED employees: " << char(156) << dContractedWages;
+    std::cout << std::fixed << std::setprecision(2) << "\nThe total PAYROLL Bills per year: " << char(156) << dContractedWages + dAllEmployeeSalary;
+
+    std::cout << std::fixed << std::setprecision(2) << "\nThe total Company Income from Open Projects: " << char(156) << dProjectFeeGenerated;
 
     std::cout << "\nPress anykey to continue";
     _getch();
@@ -599,27 +695,31 @@ void viewProjectDetails() {
     std::vector <clsProject> vClsProjectData = readProjectCSV();
     std::vector <clsSalariedEmployee> vClsSalariedEmployeeData = filteredSalariedEmployeesCSV();
     std::vector <clsContractEmployee> vClsContractedEmployeeData = filteredContractedEmployeesCSV();
-    int iOpenProjectCount = 0, iClosedProjectCount=0, daysPerWeek = 7, workDaysPerWeek = 5, daysInYear = 365;
+    int iOpenProjectCount = 0, iClosedProjectCount = 0;
+    double dDaysInYear = 365.0, dWorkDaysPerWeek = 5;
     //assume project duration is in work days
     clearScreen();
     std::cout << "This is the Project Details with fee available and cost from employees (vest viewed on large screen)\n\n";
     for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
         double dProjectCost = 0, dProjectCostOverBudgetMax, dProjectCostOverBudgetMin;
+        int iNumberOfPeopleOnProject = 0;
         //need to calculate cost of salaried employees for project
         for (size_t j = 0, ilen = vClsSalariedEmployeeData.size(); j < ilen; ++j) {
             if (vClsSalariedEmployeeData[j].getAssignedProject() == vClsProjectData[i].getProjectName()) {
                 //project cost = salary * projectduration(days)/days in year(365)
-                dProjectCost += vClsSalariedEmployeeData[j].calculateSalary(vClsSalariedEmployeeData[j].getHourlyPay(), vClsSalariedEmployeeData[j].getHoursPerWeek(), vClsSalariedEmployeeData[j].getWeeksPerYear())*(vClsProjectData[i].getProjectDurationDays()/daysInYear);
+                dProjectCost += vClsSalariedEmployeeData[j].calculateSalary(vClsSalariedEmployeeData[j].getHourlyPay(), vClsSalariedEmployeeData[j].getHoursPerWeek(), vClsSalariedEmployeeData[j].getWeeksPerYear())*(vClsProjectData[i].getProjectDurationDays()/dDaysInYear);
+                iNumberOfPeopleOnProject++;
             };
         };
         //need to calculate cost of contracted employees for project
         for (size_t j = 0, ilen = vClsContractedEmployeeData.size(); j < ilen; ++j) {
             if (vClsContractedEmployeeData[j].getAssignedProject() == vClsProjectData[i].getProjectName()) {
                 //if the numbers of contracted weeks is longer than duration of project weeks, calculate the maximum time paid on project as the duration of the project instead
-                if (vClsContractedEmployeeData[j].getWeeksPerYear() > vClsProjectData[i].getProjectDurationDays()/workDaysPerWeek) {
-                    vClsContractedEmployeeData[j].setWeekPerYear(vClsProjectData[i].getProjectDurationDays() / workDaysPerWeek);
+                if (vClsContractedEmployeeData[j].getWeeksPerYear() > vClsProjectData[i].getProjectDurationDays()/dWorkDaysPerWeek) {
+                    vClsContractedEmployeeData[j].setWeekPerYear(vClsProjectData[i].getProjectDurationDays() / dWorkDaysPerWeek);
                 };
                 dProjectCost += vClsContractedEmployeeData[j].calculateTotalPay(vClsContractedEmployeeData[j].getHourlyPay(), vClsContractedEmployeeData[j].getHoursPerWeek(), vClsContractedEmployeeData[j].getWeeksPerYear());
+                iNumberOfPeopleOnProject++;
             };
         };
         dProjectCostOverBudgetMax = dProjectCost * 1.35;
@@ -633,7 +733,8 @@ void viewProjectDetails() {
         std::cout << std::fixed << std::setprecision(2) << "Project Cost: " << char(156) << dProjectCost<<"\t";
         std::cout << std::fixed << std::setprecision(2) << "OverBudget Cost 10%: " << char(156) << dProjectCostOverBudgetMin << "\t";
         std::cout << std::fixed << std::setprecision(2) << "OverBudget Cost 35%: " << char(156) << dProjectCostOverBudgetMax << "\n";
-        std::cout << std::fixed << std::setprecision(2) << "Remaining Project Budget (10%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMin << "\t";
+        std::cout << "Number of people on the project: " << iNumberOfPeopleOnProject << "\n";
+        std::cout << std::fixed << std::setprecision(2) << "Remaining Project Budget (10%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMin << "\n";
         std::cout <<std::fixed<<std::setprecision(2)<< "Remaining Project Budget (35%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMax<< "\n\n";
 
         if (vClsProjectData[i].getProjectStatus() == "open") {
