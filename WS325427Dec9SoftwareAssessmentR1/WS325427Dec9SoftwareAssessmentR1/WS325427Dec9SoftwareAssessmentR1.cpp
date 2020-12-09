@@ -1,53 +1,51 @@
 #include <iostream>
 #include <conio.h>
-#include <vector>
 #include <string.h>
 #include <vector>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
 
-
 class clsEmployee {
 protected:
     int _iEmployeeId;
-    string _sFirstName;
-    string _sLastName;
-    string _sDepartment;
-    string _sJobGrade;
-    string _sAssignedProject;
+    std::string _sFirstName;
+    std::string _sLastName;
+    std::string _sDepartment;
+    std::string _sJobGrade;
+    std::string _sAssignedProject;
     double _dHourlyPay;
     double _dHoursPerWeek;
     int _iWeeksPerYear;
 public:
     int getID() { return _iEmployeeId; };
     void setID(int iEmployeeId) { _iEmployeeId = iEmployeeId; };
-    string getName() { return _sFirstName + " " + _sLastName; };
-    void setName(string sFirstName, string sLastName);
-    string getFirstName() { return _sFirstName; };
-    void setFirstName(string sFirstName) {_sFirstName = sFirstName; };
-    string getLastName() { return _sLastName; };
-    void setLastName(string sLastName) { _sLastName = sLastName; };
-    string getDepartment() { return _sDepartment; };
-    void setDepartment(string sDepartment) { _sDepartment = sDepartment; };
-    string getJobGrade() { return _sJobGrade; };
-    void setJobGrade(string sJobGrade) { _sJobGrade = sJobGrade; };
-    string getAssignedProject() { return _sAssignedProject; };
-    void setAssignedProject(string sAssignedProject) { _sAssignedProject = sAssignedProject; };
+    std::string getName() { return _sFirstName + " " + _sLastName; };
+    void setName(std::string sFirstName, std::string sLastName);
+    std::string getFirstName() { return _sFirstName; };
+    void setFirstName(std::string sFirstName) {_sFirstName = sFirstName; };
+    std::string getLastName() { return _sLastName; };
+    void setLastName(std::string sLastName) { _sLastName = sLastName; };
+    std::string getDepartment() { return _sDepartment; };
+    void setDepartment(std::string sDepartment) { _sDepartment = sDepartment; };
+    std::string getJobGrade() { return _sJobGrade; };
+    void setJobGrade(std::string sJobGrade) { _sJobGrade = sJobGrade; };
+    std::string getAssignedProject() { return _sAssignedProject; };
+    void setAssignedProject(std::string sAssignedProject) { _sAssignedProject = sAssignedProject; };
     double getHourlyPay() { return _dHourlyPay; };
     void setHourlyPay(double dHourlyPay) { _dHourlyPay = dHourlyPay; };
-    void setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade,string sAssignedProject, double dHourlyPay);
-    void setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sDepartment, string sJobGrade, string sAssignedProject, double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear);
+    void setClsEmployee(int iEmployeeId, std::string sFirstName, std::string sLastName, std::string sDepartment, std::string sJobGrade,std::string sAssignedProject, double dHourlyPay);
+    void setClsEmployee(int iEmployeeId, std::string sFirstName, std::string sLastName, std::string sDepartment, std::string sJobGrade, std::string sAssignedProject, double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear);
     double getHoursPerWeek() { return _dHoursPerWeek; };
     int getWeeksPerYear() { return _iWeeksPerYear; };
 };
 
-void clsEmployee::setName(string sFirstName, string sLastName) {
+void clsEmployee::setName(std::string sFirstName, std::string sLastName) {
     _sFirstName = sFirstName;
     _sLastName = sLastName;
 };
 
-void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sJobGrade, string sDepartment,  string sAssignedProject, double dHourlyPay) {
+void clsEmployee::setClsEmployee(int iEmployeeId, std::string sFirstName, std::string sLastName, std::string sJobGrade, std::string sDepartment,  std::string sAssignedProject, double dHourlyPay) {
     _iEmployeeId = iEmployeeId;
     _sFirstName = sFirstName;
     _sLastName = sLastName;
@@ -56,7 +54,7 @@ void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLas
     _sAssignedProject = sAssignedProject;
     _dHourlyPay = dHourlyPay;
 }
-void clsEmployee::setClsEmployee(int iEmployeeId, string sFirstName, string sLastName, string sJobGrade, string sDepartment, string sAssignedProject, double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear) {
+void clsEmployee::setClsEmployee(int iEmployeeId, std::string sFirstName, std::string sLastName, std::string sJobGrade, std::string sDepartment, std::string sAssignedProject, double dHourlyPay, double dHoursPerWeek, int iWeeksPerYear) {
     _iEmployeeId = iEmployeeId;
     _sFirstName = sFirstName;
     _sLastName = sLastName;
@@ -106,23 +104,23 @@ double clsContractEmployee::calculateTotalPay(double dHourlyPay, double dHoursPe
 }
 class clsProject {
 private:
-    string _sProjectName;
+    std::string _sProjectName;
     int _iProjectDurationDays;
     double _dProjectFee;
-    string _sProjectStatus;
+    std::string _sProjectStatus;
 public:
-    void setProjectName(string sProjectName) { _sProjectName = sProjectName; };
-    string getProjectName() { return _sProjectName; };
+    void setProjectName(std::string sProjectName) { _sProjectName = sProjectName; };
+    std::string getProjectName() { return _sProjectName; };
     void setProjectDurationDays(int iProjectDurationDays) { _iProjectDurationDays = iProjectDurationDays; };
     int getProjectDurationDays() { return _iProjectDurationDays; };
     void setProjectFee(double dProjectFee) { _dProjectFee = dProjectFee; };
     double getProjectFee() { return _dProjectFee; };
-    void setProjectStatus(string sProjectStatus) { _sProjectStatus = sProjectStatus; };
-    string getProjectStatus() { return _sProjectStatus; };
-    void setClsProject(string sProjectName, int iProjectDurationDays, double dProjectFee, string sProjectStatus);
+    void setProjectStatus(std::string sProjectStatus) { _sProjectStatus = sProjectStatus; };
+    std::string getProjectStatus() { return _sProjectStatus; };
+    void setClsProject(std::string sProjectName, int iProjectDurationDays, double dProjectFee, std::string sProjectStatus);
 };
 
-void clsProject::setClsProject(string sProjectName, int iProjectDurationDays, double dProjectFee, string sProjectStatus) {
+void clsProject::setClsProject(std::string sProjectName, int iProjectDurationDays, double dProjectFee, std::string sProjectStatus) {
     _sProjectName = sProjectName;
     _iProjectDurationDays = iProjectDurationDays;
     _dProjectFee = dProjectFee;
@@ -135,19 +133,19 @@ void startupScreenUserSelection(int* iUserChoice);
 void clearScreen();
 int updateUserChoice(int* iUserChoice);
 void viewFullStaffList();
-vector <clsEmployee> readEmployeeCSV();
-vector <clsSalariedEmployee> filteredSalariedEmployeesCSV();
-vector <clsContractEmployee> filteredContractedEmployeesCSV();
+std::vector <clsEmployee> readEmployeeCSV();
+std::vector <clsSalariedEmployee> filteredSalariedEmployeesCSV();
+std::vector <clsContractEmployee> filteredContractedEmployeesCSV();
 void updateStaffListMenu();
 void updateStaffListChoice(int *iUserChoice);
 void breakdownEmployeeCosts();
 void viewProjectDetails();
-vector <clsProject> readProjectCSV();
+std::vector <clsProject> readProjectCSV();
 void updateProjectDetails();
 void addStaffConfirmation();
 void collectStaffDetails();
-void addToStaffCSV(vector <clsSalariedEmployee> clsAddSalariedEmployee);
-void addToStaffCSV(vector <clsContractEmployee> clsAddContractEmployee);
+void addToStaffCSV(std::vector <clsSalariedEmployee> clsAddSalariedEmployee);
+void addToStaffCSV(std::vector <clsContractEmployee> clsAddContractEmployee);
 void removeStaff();
 void updateStaffDetails();
 void exitProgram();
@@ -157,9 +155,9 @@ void FILL();
 int main()
 {
     clearScreen();
-    cout << "Starting Program....\n";
-    cout << "This program should help you ogranise your project fee a bit better!\n";
-    cout << "Press any button to continue\n";
+    std::cout << "Starting Program....\n";
+    std::cout << "This program should help you ogranise your project fee a bit better!\n";
+    std::cout << "Press any button to continue\n";
     _getch();
     startupScreen();
 };
@@ -167,14 +165,14 @@ int main()
 int updateUserChoice(int* iUserChoice) {
     //Allows for positive integers only to be returned
     int iOption;
-    cin >> iOption;
-    //be careful with !cin?
-    while (!cin || iOption < 0)
+    std::cin >> iOption;
+    //be careful with !std::cin?
+    while (!std::cin || iOption < 0)
     {
-        cout << "Invalid Integer, Try Again!\n ";
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cin >> iOption;
+        std::cout << "Invalid Integer, Try Again!\n ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> iOption;
     }
     *iUserChoice = iOption;
     return *iUserChoice;
@@ -182,14 +180,14 @@ int updateUserChoice(int* iUserChoice) {
 void startupScreen() {
     clearScreen();
     int iUserChoice;
-    cout << "Welcome to the Project Management Menu\nWhat would you like to do?\n";
-    cout << "   1)  View Full Staff on Project List\n";
-    cout << "   2)	Update Staff List\n";
-    cout << "   3)	Total Cost and Breakdown Costs of Employees \n";
-    cout << "   4)	View Active Projects details\n";
-    cout << "   5)	Update Projects\n";
-    cout << "   6)	Exit Program\n";
-    cout << "Enter Choice Number: ";
+    std::cout << "Welcome to the Project Management Menu\nWhat would you like to do?\n";
+    std::cout << "   1)  View Full Staff on Project List\n";
+    std::cout << "   2)	Update Staff List\n";
+    std::cout << "   3)	Total Cost and Breakdown Costs of Employees \n";
+    std::cout << "   4)	View Active Projects details\n";
+    std::cout << "   5)	Update Projects\n";
+    std::cout << "   6)	Exit Program\n";
+    std::cout << "Enter Choice Number: ";
     updateUserChoice(&iUserChoice);
     startupScreenUserSelection(&iUserChoice);
 };
@@ -215,8 +213,8 @@ void startupScreenUserSelection(int *iUserChoice) {
         exitProgram();
         break;
     default:
-        cout << "\nError Inputs, Please try again\n";
-        cout << "\nRe-enter your Option:";
+        std::cout << "\nError Inputs, Please try again\n";
+        std::cout << "\nRe-enter your Option:";
         int iUserChoice = 0;
         updateUserChoice(&iUserChoice);
         startupScreenUserSelection(&iUserChoice);
@@ -224,35 +222,35 @@ void startupScreenUserSelection(int *iUserChoice) {
     };
 };
 void viewFullStaffList() {
-    vector <clsEmployee> vClsEmployee = readEmployeeCSV();
+    std::vector <clsEmployee> vClsEmployee = readEmployeeCSV();
    // for (int i = 0; i < vClsEmployee.size(); i++) 
     // i = 1;         vs              i = 1;
     // j = ++i;                      j = i++;
     // (i is 2, j is 2)             (i is 2, j is 1)
     clearScreen();
-    cout << "This is the details of Staff currrently in the system" << endl;
-    cout << "(best viewed on a larger screen)" << endl;
+    std::cout << "This is the details of Staff currrently in the system" << std::endl;
+    std::cout << "(best viewed on a larger screen)" << std::endl;
     //supposedly a faster version of looping
         for (size_t i = 0, ilen = vClsEmployee.size(); i < ilen; ++i) {
-                cout << "Employee ID: " << vClsEmployee[i].getID() << "\t";
-                cout << "First Name: " << vClsEmployee[i].getFirstName() << "\t";
-                cout << "Last Name: " << vClsEmployee[i].getLastName() << "\t";
-                cout << "Job Grade: " << vClsEmployee[i].getJobGrade() << "\t";
-                cout << "Project: " << vClsEmployee[i].getAssignedProject() << "\t";
-                cout << fixed << setprecision(2) << "Hourly Pay: " << char(156) << vClsEmployee[i].getHourlyPay() << "\n";
+                std::cout << "Employee ID: " << vClsEmployee[i].getID() << "\t";
+                std::cout << "First Name: " << vClsEmployee[i].getFirstName() << "\t";
+                std::cout << "Last Name: " << vClsEmployee[i].getLastName() << "\t";
+                std::cout << "Job Grade: " << vClsEmployee[i].getJobGrade() << "\t";
+                std::cout << "Project: " << vClsEmployee[i].getAssignedProject() << "\t";
+                std::cout << std::fixed << std::setprecision(2) << "Hourly Pay: " << char(156) << vClsEmployee[i].getHourlyPay() << "\n";
     }
         // nts, formatting could do work, maybe force a max character limit and always hit it to keep things spaced evenly
-    cout << "The total number of staff employed on Project: " << vClsEmployee.size()<< " people" << endl;
-    cout << "\nPress any button to return to Project Management Screen";
+    std::cout << "The total number of staff employed on Project: " << vClsEmployee.size()<< " people" << std::endl;
+    std::cout << "\nPress any button to return to Project Management Screen";
     _getch();
     startupScreen();
 };
 
-vector <clsEmployee> readEmployeeCSV() {
-    ifstream employeeData;
-    vector <clsEmployee> vClsEmployee;
+std::vector <clsEmployee> readEmployeeCSV() {
+    std::ifstream employeeData;
+    std::vector <clsEmployee> vClsEmployee;
     int iCount=0;
-    string sEmployeeId, sFirstName, sLastName, sGrade, sDepartment, sProject, sHourlyPay, sHoursPerWeek, sWeeksPerYear;
+    std::string sEmployeeId, sFirstName, sLastName, sGrade, sDepartment, sProject, sHourlyPay, sHoursPerWeek, sWeeksPerYear;
     employeeData.open("employeeData.csv");
 
     while (getline(employeeData, sEmployeeId, ',')) {
@@ -272,9 +270,9 @@ vector <clsEmployee> readEmployeeCSV() {
     return vClsEmployee;
 }
 
-vector <clsSalariedEmployee> filteredSalariedEmployeesCSV() {
-    vector <clsEmployee> vClsEmployee;
-    vector <clsSalariedEmployee> vClsSalariedEmployees;
+std::vector <clsSalariedEmployee> filteredSalariedEmployeesCSV() {
+    std::vector <clsEmployee> vClsEmployee;
+    std::vector <clsSalariedEmployee> vClsSalariedEmployees;
     vClsEmployee = readEmployeeCSV();
     int iSalariedEmployeeCount = 0;
 
@@ -289,9 +287,9 @@ vector <clsSalariedEmployee> filteredSalariedEmployeesCSV() {
     };
     return vClsSalariedEmployees;
 };
-vector <clsContractEmployee> filteredContractedEmployeesCSV() {
-    vector <clsEmployee> vClsEmployee;
-    vector <clsContractEmployee> vClsContractEmployees;
+std::vector <clsContractEmployee> filteredContractedEmployeesCSV() {
+    std::vector <clsEmployee> vClsEmployee;
+    std::vector <clsContractEmployee> vClsContractEmployees;
     vClsEmployee = readEmployeeCSV();
     int iContractedEmployeeCount = 0;
 
@@ -310,12 +308,12 @@ vector <clsContractEmployee> filteredContractedEmployeesCSV() {
 void updateStaffListMenu() {
     clearScreen();
     int iUserChoice;
-    cout << "Welcome to Staff List Update Menu\nWhat would you like to do?\n";
-    cout << "   1)  Add Staff\n";
-    cout << "   2)	Remove Staff\n";
-    cout << "   3)	Update Staff Detail \n";
-    cout << "   4)	Return to Project Management Menu\n";
-    cout << "Enter Choice Number: ";
+    std::cout << "Welcome to Staff List Update Menu\nWhat would you like to do?\n";
+    std::cout << "   1)  Add Staff\n";
+    std::cout << "   2)	Remove Staff\n";
+    std::cout << "   3)	Update Staff Detail \n";
+    std::cout << "   4)	Return to Project Management Menu\n";
+    std::cout << "Enter Choice Number: ";
     updateUserChoice(&iUserChoice);
     updateStaffListChoice(&iUserChoice);
 };
@@ -335,8 +333,8 @@ void updateStaffListChoice(int *iUserChoice) {
         startupScreen();
         break;
     default:
-        cout << "\nError Inputs, Please try again\n";
-        cout << "\nRe-enter your Option:";
+        std::cout << "\nError Inputs, Please try again\n";
+        std::cout << "\nRe-enter your Option:";
         int iUserChoice = 0;
         updateUserChoice(&iUserChoice);
         updateStaffListChoice(&iUserChoice);
@@ -345,15 +343,15 @@ void updateStaffListChoice(int *iUserChoice) {
 };
 void addStaffConfirmation() {
     clearScreen();
-    cout << "You are about to add a new staff member!\n";
-    cout << "This requires the following information...\n";
-    cout << "   6 digit Staff ID\n";
-    cout << "   First Name\n";
-    cout << "   Last Name\n";
-    cout << "   Job Grade\n";
-    cout << "   Department\n";
-    cout << "   Hourly Pay\n";
-    cout << "Continue? 1) Yes   2) No   (select number)\n";
+    std::cout << "You are about to add a new staff member!\n";
+    std::cout << "This requires the following information...\n";
+    std::cout << "   6 digit Staff ID\n";
+    std::cout << "   First Name\n";
+    std::cout << "   Last Name\n";
+    std::cout << "   Job Grade\n";
+    std::cout << "   Department\n";
+    std::cout << "   Hourly Pay\n";
+    std::cout << "Continue? 1) Yes   2) No   (select number)\n";
 
     int iUserChoice;
     switch (updateUserChoice(&iUserChoice))
@@ -362,36 +360,38 @@ void addStaffConfirmation() {
         collectStaffDetails();
         break;
     case 2:
-        cout << "Returning back to the Project Management Menu";
+        std::cout << "Returning back to the Project Management Menu";
         startupScreen();
         break;
     default:
-        cout << "\nError Inputs, Please try again\n";
+        std::cout << "\nError Inputs, Please try again\n";
         addStaffConfirmation();
     };
 };
 
 //NEED TO CLEAN UP THIS FUNCTION
 void collectStaffDetails() {
-    vector <clsSalariedEmployee> clsAddSalariedEmployee;
-    vector <clsContractEmployee> clsAddContractEmployee;
+    std::vector <clsSalariedEmployee> clsAddSalariedEmployee;
+    std::vector <clsContractEmployee> clsAddContractEmployee;
+    std::vector <clsProject> vClsProjectData = readProjectCSV();
     int iEmployeeId, iUserChoice, iWeeksPerYear;
-    string sFirstName, sLastName,sDepartment,sJobGrade,sAssignedProject ="non-project";
+    std::string sFirstName, sLastName,sDepartment,sJobGrade,sAssignedProject ="non-project";
     double dHourlyPay, dHoursPerWeek;
-    cout << "Enter 6 Digit ID: ";
-    cin >> iEmployeeId;
-    cout << "Enter First Name: ";
-    cin >> sFirstName;
-    cout << "Enter Last Name: ";
-    cin >> sLastName;
+    bool bFoundMatch = false;
+    std::cout << "Enter 6 Digit ID: ";
+    std::cin >> iEmployeeId;
+    std::cout << "Enter First Name: ";
+    std::cin >> sFirstName;
+    std::cout << "Enter Last Name: ";
+    std::cin >> sLastName;
 
-    cout << "Choose Department\n";
-    cout << "   1) Research\n";
-    cout << "   2) Developer\n";
-    cout << "   3) Analyst\n";
-    cout << "   4) Marketing\n";
-    cout << "   5) Other \n";
-    cout << "Choice: ";
+    std::cout << "Choose Department\n";
+    std::cout << "   1) Research\n";
+    std::cout << "   2) Developer\n";
+    std::cout << "   3) Analyst\n";
+    std::cout << "   4) Marketing\n";
+    std::cout << "   5) Other \n";
+    std::cout << "Choice: ";
     switch (updateUserChoice(&iUserChoice))
     {
     case 1:
@@ -410,16 +410,16 @@ void collectStaffDetails() {
         sDepartment = "Other";
         break;
     default:
-        cout << "\nError Inputs, Please try again\n";
+        std::cout << "\nError Inputs, Please try again\n";
         collectStaffDetails();
         break;
     }
 
-    cout << "Choose Job Grade\n";
-    cout << "   1) Junior\n";
-    cout << "   2) Senior\n";
-    cout << "   3) Contracted\n";
-    cout << "Choice: ";
+    std::cout << "Choose Job Grade\n";
+    std::cout << "   1) Junior\n";
+    std::cout << "   2) Senior\n";
+    std::cout << "   3) Contracted\n";
+    std::cout << "Choice: ";
     switch (updateUserChoice(&iUserChoice))
     {
     case 1:
@@ -430,31 +430,54 @@ void collectStaffDetails() {
         break;
     case 3:
         sJobGrade = "Contracted";
-        cout << "\nHow many hours per week?(max 20): ";
-        cin >> dHoursPerWeek;
-        cout << "\nHow many weeks per year?(max30): ";
-        cin >> iWeeksPerYear;
+        std::cout << "\nHow many hours per week?(max 20): ";
+        std::cin >> dHoursPerWeek;
+        std::cout << "\nHow many weeks per year?(max30): ";
+        std::cin >> iWeeksPerYear;
         break;
     default:
-        cout << "\nError Inputs, Please try again\n";
+        std::cout << "\nError Inputs, Please try again\n";
         collectStaffDetails();
         break;
     }
-    cout << "Enter hourly pay: "<<char(156);
-    cin >> dHourlyPay;
+    std::cout << "Enter hourly pay: "<<char(156);
+    std::cin >> dHourlyPay;
 
-    cout << "Would you like to add this employee on a project now?\n";
+    std::cout << "Would you like to add this employee on a project now?\n";
+    std::cout << "   Press 1 to Assign, else press a button to continue...\n";
+    switch (updateUserChoice(&iUserChoice))
+    {
+    case 1:
+
+        std::cout << "Current Projects Available:\n";
+        for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
+            std::cout << i+1<<") "<<vClsProjectData[i].getProjectName()<<"\n";
+        }
+        std::cout << "Please type the assigned project(case sensitive)\n";
+        std::cin >> sAssignedProject;
+        for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
+            if(sAssignedProject == vClsProjectData[i].getProjectName());
+            bFoundMatch = true;
+        }
+        if (!bFoundMatch) {
+            std::cout << "No match, will now default to non-project\n";
+        }
+        break;
+    default:
+        break;
+    }
+
 
     if (sJobGrade == "Senior" || sJobGrade == "Junior") {
         clsAddSalariedEmployee.push_back(clsSalariedEmployee());
         clsAddSalariedEmployee[0].setClsEmployee(iEmployeeId, sFirstName, sLastName, sJobGrade, sDepartment, sAssignedProject, dHourlyPay);
         clearScreen();
 
-        cout << "6 digit Staff ID: " << clsAddSalariedEmployee[0].getID() << "\n";
-        cout << "Name: " << clsAddSalariedEmployee[0].getName() << "\n";
-        cout << "Job Grade: " << clsAddSalariedEmployee[0].getJobGrade() << "\n";
-        cout << "Department: " << clsAddSalariedEmployee[0].getDepartment() << "\n";
-        cout << fixed << setprecision(2) << "Hourly Pay: " << char(156) << clsAddSalariedEmployee[0].getHourlyPay() << "\n";
+        std::cout << "6 digit Staff ID: " << clsAddSalariedEmployee[0].getID() << "\n";
+        std::cout << "Name: " << clsAddSalariedEmployee[0].getName() << "\n";
+        std::cout << "Job Grade: " << clsAddSalariedEmployee[0].getJobGrade() << "\n";
+        std::cout << "Department: " << clsAddSalariedEmployee[0].getDepartment() << "\n";
+        std::cout << std::fixed << std::setprecision(2) << "Hourly Pay: " << char(156) << clsAddSalariedEmployee[0].getHourlyPay() << "\n";
     }
     else if (sJobGrade == "Contracted") {
         clsAddContractEmployee.push_back(clsContractEmployee());
@@ -462,16 +485,21 @@ void collectStaffDetails() {
         clsAddContractEmployee[0].setHoursPerWeek(dHoursPerWeek);
         clsAddContractEmployee[0].setWeekPerYear(iWeeksPerYear);
         clearScreen();
-        cout << "6 digit Staff ID: " << clsAddContractEmployee[0].getID() << "\n";
-        cout << "Name: " << clsAddContractEmployee[0].getName() << "\n";
-        cout << "Job Grade: " << clsAddContractEmployee[0].getJobGrade() << "\n";
-        cout << "Department: " << clsAddContractEmployee[0].getDepartment() << "\n";
-        cout << fixed << setprecision(2) << "Hourly Pay: " << char(156) << clsAddContractEmployee[0].getHourlyPay() <<"\n";
-        cout << "Hours Per Week: " << clsAddContractEmployee[0].getHoursPerWeek() << "\n";
-        cout << "Weeks Per Year: " << clsAddContractEmployee[0].getWeeksPerYear() << "\n";
+        std::cout << "6 digit Staff ID: " << clsAddContractEmployee[0].getID() << "\n";
+        std::cout << "Name: " << clsAddContractEmployee[0].getName() << "\n";
+        std::cout << "Job Grade: " << clsAddContractEmployee[0].getJobGrade() << "\n";
+        std::cout << "Department: " << clsAddContractEmployee[0].getDepartment() << "\n";
+        std::cout << std::fixed << std::setprecision(2) << "Hourly Pay: " << char(156) << clsAddContractEmployee[0].getHourlyPay() <<"\n";
+        std::cout << "Hours Per Week: " << clsAddContractEmployee[0].getHoursPerWeek() << "\n";
+        std::cout << "Weeks Per Year: " << clsAddContractEmployee[0].getWeeksPerYear() << "\n";
     };
-
-    cout << "\nConfirm Details:  1) Yes   2) Cancel(return to Project Management Screen) (select number)\n";
+    if (sAssignedProject != "non-project") {
+        std::cout << "Assigned Project to " << sAssignedProject << "\n";
+    }
+    else {
+        std::cout << "No assigned project!  Please update when you can in Staff Update Details\n";
+    }
+    std::cout << "\nConfirm Details:  1) Yes   2) Cancel(return to Project Management Screen) (select number)\n";
     switch (updateUserChoice(&iUserChoice))
     {
     case 1:
@@ -483,40 +511,40 @@ void collectStaffDetails() {
         }
         break;
     case 2:
-        cout << "Returning back to the Project Management Menu";
+        std::cout << "Returning back to the Project Management Menu";
         startupScreen();
         break;
     default:
-        cout << "\nError Inputs, Please try again\n";
+        std::cout << "\nError Inputs, Please try again\n";
         collectStaffDetails();
     };
 };
 
 //repeated for different intake of staff grade
-void addToStaffCSV(vector <clsSalariedEmployee> clsAddSalariedEmployee) {
-    ofstream employeeData;
+void addToStaffCSV(std::vector <clsSalariedEmployee> clsAddSalariedEmployee) {
+    std::ofstream employeeData;
 
-    employeeData.open("employeeData.csv", ios::app);
+    employeeData.open("employeeData.csv", std::ios::app);
     for (size_t i = 0, ilen = clsAddSalariedEmployee.size(); i < ilen; ++i) {
-        employeeData << clsAddSalariedEmployee[i].getID() << "," << clsAddSalariedEmployee[i].getFirstName() << "," << clsAddSalariedEmployee[i].getLastName() << "," << clsAddSalariedEmployee[i].getJobGrade() << "," << clsAddSalariedEmployee[i].getDepartment() << "," << clsAddSalariedEmployee[i].getAssignedProject() << "," << clsAddSalariedEmployee[i].getHourlyPay() << "," << clsAddSalariedEmployee[i].getHoursPerWeek() << "," << clsAddSalariedEmployee[i].getWeeksPerYear() << endl;
+        employeeData << clsAddSalariedEmployee[i].getID() << "," << clsAddSalariedEmployee[i].getFirstName() << "," << clsAddSalariedEmployee[i].getLastName() << "," << clsAddSalariedEmployee[i].getJobGrade() << "," << clsAddSalariedEmployee[i].getDepartment() << "," << clsAddSalariedEmployee[i].getAssignedProject() << "," << clsAddSalariedEmployee[i].getHourlyPay() << "," << clsAddSalariedEmployee[i].getHoursPerWeek() << "," << clsAddSalariedEmployee[i].getWeeksPerYear() << std::endl;
     }
     employeeData.close();
-    cout << "\nSUCCESSFUL\n";
-    cout << "\nPress any button to continue";
+    std::cout << "\nSUCCESSFUL\n";
+    std::cout << "\nPress any button to continue";
     _getch();
     startupScreen();
 };
 
-void addToStaffCSV(vector <clsContractEmployee> clsAddContractEmployee) {
-    ofstream employeeData;
+void addToStaffCSV(std::vector <clsContractEmployee> clsAddContractEmployee) {
+    std::ofstream employeeData;
 
-    employeeData.open("employeeData.csv", ios::app);
+    employeeData.open("employeeData.csv", std::ios::app);
     for (size_t i = 0, ilen = clsAddContractEmployee.size(); i < ilen; ++i) {
-        employeeData << clsAddContractEmployee[i].getID() << "," << clsAddContractEmployee[i].getFirstName() << "," << clsAddContractEmployee[i].getLastName() << "," << clsAddContractEmployee[i].getJobGrade() << "," << clsAddContractEmployee[i].getDepartment() << "," << clsAddContractEmployee[i].getAssignedProject() << "," << clsAddContractEmployee[i].getHourlyPay() << "," << clsAddContractEmployee[i].getHoursPerWeek() << "," << clsAddContractEmployee[i].getWeeksPerYear() << endl;
+        employeeData << clsAddContractEmployee[i].getID() << "," << clsAddContractEmployee[i].getFirstName() << "," << clsAddContractEmployee[i].getLastName() << "," << clsAddContractEmployee[i].getJobGrade() << "," << clsAddContractEmployee[i].getDepartment() << "," << clsAddContractEmployee[i].getAssignedProject() << "," << clsAddContractEmployee[i].getHourlyPay() << "," << clsAddContractEmployee[i].getHoursPerWeek() << "," << clsAddContractEmployee[i].getWeeksPerYear() << std::endl;
     }
     employeeData.close();
-    cout << "\nSUCCESSFUL\n";
-    cout << "\nPress any button to continue";
+    std::cout << "\nSUCCESSFUL\n";
+    std::cout << "\nPress any button to continue";
     _getch();
     startupScreen();
 };
@@ -530,8 +558,8 @@ void updateStaffDetails() {
 
 //priority outpts requirements
 void breakdownEmployeeCosts() {
-    vector <clsContractEmployee> vClsContractEmployeesData = filteredContractedEmployeesCSV();
-    vector <clsSalariedEmployee> vClsSalariedEmployeesData = filteredSalariedEmployeesCSV();
+    std::vector <clsContractEmployee> vClsContractEmployeesData = filteredContractedEmployeesCSV();
+    std::vector <clsSalariedEmployee> vClsSalariedEmployeesData = filteredSalariedEmployeesCSV();
     double dAllEmployeeSalary=0, dSeniorSalary=0, dJuniorSalary=0, dContractedWages=0;
     //- Total amount of salary to the senior staff
     //    - Total salary for the salaried staff
@@ -554,13 +582,13 @@ void breakdownEmployeeCosts() {
         dContractedWages += vClsContractEmployeesData[i].calculateTotalPay(vClsContractEmployeesData[i].getHourlyPay(), vClsContractEmployeesData[i].getHoursPerWeek(), vClsContractEmployeesData[i].getWeeksPerYear());
     };
 
-    cout << "\n\nThe total cost of JUNIOR salaried employees per year: " << char(156) << dJuniorSalary;
-    cout << "\nThe total cost of SENIOR salaried employees per year: " << char(156) << dSeniorSalary;
-    cout << "\nThe total cost of ALL salaried employees per year: " << char(156) << dAllEmployeeSalary;
-    cout << "\nThe total cost of CONTRACTED employees: " << char(156) << dContractedWages;
-    cout << "\nThe total PAYROLL Bills per year: " << char(156) << dContractedWages + dAllEmployeeSalary;
+    std::cout << "\n\nThe total cost of JUNIOR salaried employees per year: " << char(156) << dJuniorSalary;
+    std::cout << "\nThe total cost of SENIOR salaried employees per year: " << char(156) << dSeniorSalary;
+    std::cout << "\nThe total cost of ALL salaried employees per year: " << char(156) << dAllEmployeeSalary;
+    std::cout << "\nThe total cost of CONTRACTED employees: " << char(156) << dContractedWages;
+    std::cout << "\nThe total PAYROLL Bills per year: " << char(156) << dContractedWages + dAllEmployeeSalary;
 
-    cout << "\nPress anykey to continue";
+    std::cout << "\nPress anykey to continue";
     _getch();
     startupScreen();
 };
@@ -568,13 +596,13 @@ void breakdownEmployeeCosts() {
 
 
 void viewProjectDetails() {
-    vector <clsProject> vClsProjectData = readProjectCSV();
-    vector <clsSalariedEmployee> vClsSalariedEmployeeData = filteredSalariedEmployeesCSV();
-    vector <clsContractEmployee> vClsContractedEmployeeData = filteredContractedEmployeesCSV();
+    std::vector <clsProject> vClsProjectData = readProjectCSV();
+    std::vector <clsSalariedEmployee> vClsSalariedEmployeeData = filteredSalariedEmployeesCSV();
+    std::vector <clsContractEmployee> vClsContractedEmployeeData = filteredContractedEmployeesCSV();
     int iOpenProjectCount = 0, iClosedProjectCount=0, daysPerWeek = 7, workDaysPerWeek = 5, daysInYear = 365;
     //assume project duration is in work days
     clearScreen();
-    cout << "This is the Project Details with fee available and cost from employees (vest viewed on large screen)\n\n";
+    std::cout << "This is the Project Details with fee available and cost from employees (vest viewed on large screen)\n\n";
     for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
         double dProjectCost = 0, dProjectCostOverBudgetMax, dProjectCostOverBudgetMin;
         //need to calculate cost of salaried employees for project
@@ -597,16 +625,16 @@ void viewProjectDetails() {
         dProjectCostOverBudgetMax = dProjectCost * 1.35;
         dProjectCostOverBudgetMin = dProjectCost * 1.1;
 
-        //fixed prevents scientific notation and set precision to 2 decimal places
-        cout << "Project Name: " << vClsProjectData[i].getProjectName() << "\t";
-        cout << "Project Duration(Days): " << vClsProjectData[i].getProjectDurationDays()<< "\t";
-        cout << fixed << setprecision(2) << "Project Fee: " << char(156) << vClsProjectData[i].getProjectFee() << "\t";
-        cout << "Project Status: " << vClsProjectData[i].getProjectStatus() << "\t";
-        cout << fixed << setprecision(2) << "Project Cost: " << char(156) << dProjectCost<<"\t";
-        cout << fixed << setprecision(2) << "OverBudget Cost 10%: " << char(156) << dProjectCostOverBudgetMin << "\t";
-        cout << fixed << setprecision(2) << "OverBudget Cost 35%: " << char(156) << dProjectCostOverBudgetMax << "\n";
-        cout << fixed << setprecision(2) << "Remaining Project Budget (10%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMin << "\t";
-        cout <<fixed<<setprecision(2)<< "Remaining Project Budget (35%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMax<< "\n\n";
+        //std::fixed prevents scientific notation and set precision to 2 decimal places
+        std::cout << "Project Name: " << vClsProjectData[i].getProjectName() << "\t";
+        std::cout << "Project Duration(Days): " << vClsProjectData[i].getProjectDurationDays()<< "\t";
+        std::cout << std::fixed << std::setprecision(2) << "Project Fee: " << char(156) << vClsProjectData[i].getProjectFee() << "\t";
+        std::cout << "Project Status: " << vClsProjectData[i].getProjectStatus() << "\t";
+        std::cout << std::fixed << std::setprecision(2) << "Project Cost: " << char(156) << dProjectCost<<"\t";
+        std::cout << std::fixed << std::setprecision(2) << "OverBudget Cost 10%: " << char(156) << dProjectCostOverBudgetMin << "\t";
+        std::cout << std::fixed << std::setprecision(2) << "OverBudget Cost 35%: " << char(156) << dProjectCostOverBudgetMax << "\n";
+        std::cout << std::fixed << std::setprecision(2) << "Remaining Project Budget (10%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMin << "\t";
+        std::cout <<std::fixed<<std::setprecision(2)<< "Remaining Project Budget (35%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMax<< "\n\n";
 
         if (vClsProjectData[i].getProjectStatus() == "open") {
             iOpenProjectCount++;
@@ -615,17 +643,17 @@ void viewProjectDetails() {
             iClosedProjectCount++;
         }
     }
-        cout << "The total number projects ongoing: " << iOpenProjectCount << " projects" << endl;
-        cout << "The total number projects closed: " << iClosedProjectCount << " projects" << endl;
+        std::cout << "The total number projects ongoing: " << iOpenProjectCount << " projects" << std::endl;
+        std::cout << "The total number projects closed: " << iClosedProjectCount << " projects" << std::endl;
 
-    cout << "\nPress any button to return to Project Management Screen";
+    std::cout << "\nPress any button to return to Project Management Screen";
     _getch();
     startupScreen();
 };
-vector <clsProject> readProjectCSV() {
-    ifstream projectData;
-    vector <clsProject> vClsProjectData;
-    string sProjectName, sProjectDurationDays, sProjectFee, sProjectStatus;
+std::vector <clsProject> readProjectCSV() {
+    std::ifstream projectData;
+    std::vector <clsProject> vClsProjectData;
+    std::string sProjectName, sProjectDurationDays, sProjectFee, sProjectStatus;
     int i = 0;
     projectData.open("projectData.csv");
     if (projectData.is_open())
@@ -649,17 +677,17 @@ void updateProjectDetails() {
     FILL();
 };
 void exitProgram() {
-    cout << "Thank you for using this program!\nExiting....";
+    std::cout << "Thank you for using this program!\nExiting....";
     return;
 };
 
 void clearScreen(){//Allows for console screen to be cleared when moving to new screens
-    cout << string(100, '\n');
+    std::cout << std::string(100, '\n');
 }
 
 void FILL(){//PLACEHOLDERS
-    cout << "\n\nThis feature is not yet implemented! Will now return to Project Management Menu!";
-    cout << "\nPress Any button to continue!";
+    std::cout << "\n\nThis feature is not yet implemented! Will now return to Project Management Menu!";
+    std::cout << "\nPress Any button to continue!";
     _getch();
     startupScreen();
 }
