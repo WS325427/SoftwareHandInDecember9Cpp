@@ -5,7 +5,8 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-using namespace std;
+#include <iomanip>
+
 
 class clsEmployee {
 protected:
@@ -145,8 +146,8 @@ vector <clsProject> readProjectCSV();
 void updateProjectDetails();
 void addStaffConfirmation();
 void collectStaffDetails();
-void addToStaffCSV(clsSalariedEmployee* clsAddSalariedEmployee);
-void addToStaffCSV(clsContractEmployee* clsAddEmployee);
+void addToStaffCSV(vector <clsSalariedEmployee> clsAddSalariedEmployee);
+void addToStaffCSV(vector <clsContractEmployee> clsAddContractEmployee);
 void removeStaff();
 void updateStaffDetails();
 void exitProgram();
@@ -238,7 +239,7 @@ void viewFullStaffList() {
                 cout << "Last Name: " << vClsEmployee[i].getLastName() << "\t";
                 cout << "Job Grade: " << vClsEmployee[i].getJobGrade() << "\t";
                 cout << "Project: " << vClsEmployee[i].getAssignedProject() << "\t";
-                cout << "Hourly Pay: " << char(156) << vClsEmployee[i].getHourlyPay() << "\n";
+                cout << fixed << setprecision(2) << "Hourly Pay: " << char(156) << vClsEmployee[i].getHourlyPay() << "\n";
     }
         // nts, formatting could do work, maybe force a max character limit and always hit it to keep things spaced evenly
     cout << "The total number of staff employed on Project: " << vClsEmployee.size()<< " people" << endl;
@@ -355,8 +356,7 @@ void addStaffConfirmation() {
     cout << "Continue? 1) Yes   2) No   (select number)\n";
 
     int iUserChoice;
-    cin >> iUserChoice;
-    switch (iUserChoice)
+    switch (updateUserChoice(&iUserChoice))
     {
     case 1:
         collectStaffDetails();
@@ -373,8 +373,8 @@ void addStaffConfirmation() {
 
 //NEED TO CLEAN UP THIS FUNCTION
 void collectStaffDetails() {
-    clsSalariedEmployee clsAddSalariedEmployee;
-    clsContractEmployee clsAddContractEmployee;
+    vector <clsSalariedEmployee> clsAddSalariedEmployee;
+    vector <clsContractEmployee> clsAddContractEmployee;
     int iEmployeeId, iUserChoice, iWeeksPerYear;
     string sFirstName, sLastName,sDepartment,sJobGrade,sAssignedProject ="non-project";
     double dHourlyPay, dHoursPerWeek;
@@ -392,8 +392,7 @@ void collectStaffDetails() {
     cout << "   4) Marketing\n";
     cout << "   5) Other \n";
     cout << "Choice: ";
-    cin >> iUserChoice;
-    switch (iUserChoice)
+    switch (updateUserChoice(&iUserChoice))
     {
     case 1:
         sDepartment = "Research";
@@ -421,8 +420,7 @@ void collectStaffDetails() {
     cout << "   2) Senior\n";
     cout << "   3) Contracted\n";
     cout << "Choice: ";
-    cin >> iUserChoice;
-    switch (iUserChoice)
+    switch (updateUserChoice(&iUserChoice))
     {
     case 1:
         sJobGrade = "Junior";
@@ -442,43 +440,46 @@ void collectStaffDetails() {
         collectStaffDetails();
         break;
     }
-
     cout << "Enter hourly pay: "<<char(156);
     cin >> dHourlyPay;
+
+    cout << "Would you like to add this employee on a project now?\n";
+
     if (sJobGrade == "Senior" || sJobGrade == "Junior") {
-        clsAddSalariedEmployee.setClsEmployee(iEmployeeId, sFirstName, sLastName, sJobGrade, sDepartment, sAssignedProject, dHourlyPay);
+        clsAddSalariedEmployee.push_back(clsSalariedEmployee());
+        clsAddSalariedEmployee[0].setClsEmployee(iEmployeeId, sFirstName, sLastName, sJobGrade, sDepartment, sAssignedProject, dHourlyPay);
         clearScreen();
 
-        cout << "6 digit Staff ID: " << clsAddSalariedEmployee.getID() << "\n";
-        cout << "Name: " << clsAddSalariedEmployee.getName() << "\n";
-        cout << "Job Grade: " << clsAddSalariedEmployee.getJobGrade() << "\n";
-        cout << "Department: " << clsAddSalariedEmployee.getDepartment() << "\n";
-        cout << "Hourly Pay: " << char(156) << clsAddSalariedEmployee.getHourlyPay() << "\n";
+        cout << "6 digit Staff ID: " << clsAddSalariedEmployee[0].getID() << "\n";
+        cout << "Name: " << clsAddSalariedEmployee[0].getName() << "\n";
+        cout << "Job Grade: " << clsAddSalariedEmployee[0].getJobGrade() << "\n";
+        cout << "Department: " << clsAddSalariedEmployee[0].getDepartment() << "\n";
+        cout << fixed << setprecision(2) << "Hourly Pay: " << char(156) << clsAddSalariedEmployee[0].getHourlyPay() << "\n";
     }
     else if (sJobGrade == "Contracted") {
-        clsAddContractEmployee.setClsEmployee(iEmployeeId, sFirstName, sLastName, sJobGrade, sDepartment, sAssignedProject, dHourlyPay);
-        clsAddContractEmployee.setHoursPerWeek(dHoursPerWeek);
-        clsAddContractEmployee.setWeekPerYear(iWeeksPerYear);
+        clsAddContractEmployee.push_back(clsContractEmployee());
+        clsAddContractEmployee[0].setClsEmployee(iEmployeeId, sFirstName, sLastName, sJobGrade, sDepartment, sAssignedProject, dHourlyPay);
+        clsAddContractEmployee[0].setHoursPerWeek(dHoursPerWeek);
+        clsAddContractEmployee[0].setWeekPerYear(iWeeksPerYear);
         clearScreen();
-        cout << "6 digit Staff ID: " << clsAddContractEmployee.getID() << "\n";
-        cout << "Name: " << clsAddContractEmployee.getName() << "\n";
-        cout << "Job Grade: " << clsAddContractEmployee.getJobGrade() << "\n";
-        cout << "Department: " << clsAddContractEmployee.getDepartment() << "\n";
-        cout << "Hourly Pay: " << char(156) << clsAddContractEmployee.getHourlyPay() <<"\n";
-        cout << "Hours Per Week: " << clsAddContractEmployee.getHoursPerWeek() << "\n";
-        cout << "Weeks Per Year: " << clsAddContractEmployee.getWeeksPerYear() << "\n";
+        cout << "6 digit Staff ID: " << clsAddContractEmployee[0].getID() << "\n";
+        cout << "Name: " << clsAddContractEmployee[0].getName() << "\n";
+        cout << "Job Grade: " << clsAddContractEmployee[0].getJobGrade() << "\n";
+        cout << "Department: " << clsAddContractEmployee[0].getDepartment() << "\n";
+        cout << fixed << setprecision(2) << "Hourly Pay: " << char(156) << clsAddContractEmployee[0].getHourlyPay() <<"\n";
+        cout << "Hours Per Week: " << clsAddContractEmployee[0].getHoursPerWeek() << "\n";
+        cout << "Weeks Per Year: " << clsAddContractEmployee[0].getWeeksPerYear() << "\n";
     };
 
     cout << "\nConfirm Details:  1) Yes   2) Cancel(return to Project Management Screen) (select number)\n";
-    cin >> iUserChoice;
-    switch (iUserChoice)
+    switch (updateUserChoice(&iUserChoice))
     {
     case 1:
         if (sJobGrade == "Senior" || sJobGrade == "Junior") {
-            addToStaffCSV(&clsAddSalariedEmployee);
+            addToStaffCSV(clsAddSalariedEmployee);
         }
         else if (sJobGrade == "Contracted") {
-            addToStaffCSV(&clsAddContractEmployee);
+            addToStaffCSV(clsAddContractEmployee);
         }
         break;
     case 2:
@@ -492,10 +493,13 @@ void collectStaffDetails() {
 };
 
 //repeated for different intake of staff grade
-void addToStaffCSV(clsSalariedEmployee* clsAddSalariedEmployee) {
+void addToStaffCSV(vector <clsSalariedEmployee> clsAddSalariedEmployee) {
     ofstream employeeData;
+
     employeeData.open("employeeData.csv", ios::app);
-    employeeData << clsAddSalariedEmployee->getID() << "," << clsAddSalariedEmployee->getFirstName() << "," << clsAddSalariedEmployee->getLastName() << "," << clsAddSalariedEmployee->getJobGrade() << "," << clsAddSalariedEmployee->getDepartment() << "," << clsAddSalariedEmployee->getAssignedProject() << "," << clsAddSalariedEmployee->getHourlyPay() << "," << clsAddSalariedEmployee->getHoursPerWeek() << "," << clsAddSalariedEmployee->getWeeksPerYear() << endl;
+    for (size_t i = 0, ilen = clsAddSalariedEmployee.size(); i < ilen; ++i) {
+        employeeData << clsAddSalariedEmployee[i].getID() << "," << clsAddSalariedEmployee[i].getFirstName() << "," << clsAddSalariedEmployee[i].getLastName() << "," << clsAddSalariedEmployee[i].getJobGrade() << "," << clsAddSalariedEmployee[i].getDepartment() << "," << clsAddSalariedEmployee[i].getAssignedProject() << "," << clsAddSalariedEmployee[i].getHourlyPay() << "," << clsAddSalariedEmployee[i].getHoursPerWeek() << "," << clsAddSalariedEmployee[i].getWeeksPerYear() << endl;
+    }
     employeeData.close();
     cout << "\nSUCCESSFUL\n";
     cout << "\nPress any button to continue";
@@ -503,10 +507,13 @@ void addToStaffCSV(clsSalariedEmployee* clsAddSalariedEmployee) {
     startupScreen();
 };
 
-void addToStaffCSV(clsContractEmployee* clsAddContractEmployee) {
+void addToStaffCSV(vector <clsContractEmployee> clsAddContractEmployee) {
     ofstream employeeData;
+
     employeeData.open("employeeData.csv", ios::app);
-    employeeData << clsAddContractEmployee->getID() << "," << clsAddContractEmployee->getFirstName() << "," << clsAddContractEmployee->getLastName() << "," << clsAddContractEmployee->getJobGrade() << "," << clsAddContractEmployee->getDepartment() << "," << clsAddContractEmployee->getAssignedProject() << "," << clsAddContractEmployee->getHourlyPay() << "," << clsAddContractEmployee->getHoursPerWeek() << "," << clsAddContractEmployee->getWeeksPerYear() << endl;
+    for (size_t i = 0, ilen = clsAddContractEmployee.size(); i < ilen; ++i) {
+        employeeData << clsAddContractEmployee[i].getID() << "," << clsAddContractEmployee[i].getFirstName() << "," << clsAddContractEmployee[i].getLastName() << "," << clsAddContractEmployee[i].getJobGrade() << "," << clsAddContractEmployee[i].getDepartment() << "," << clsAddContractEmployee[i].getAssignedProject() << "," << clsAddContractEmployee[i].getHourlyPay() << "," << clsAddContractEmployee[i].getHoursPerWeek() << "," << clsAddContractEmployee[i].getWeeksPerYear() << endl;
+    }
     employeeData.close();
     cout << "\nSUCCESSFUL\n";
     cout << "\nPress any button to continue";
@@ -590,16 +597,16 @@ void viewProjectDetails() {
         dProjectCostOverBudgetMax = dProjectCost * 1.35;
         dProjectCostOverBudgetMin = dProjectCost * 1.1;
 
-
+        //fixed prevents scientific notation and set precision to 2 decimal places
         cout << "Project Name: " << vClsProjectData[i].getProjectName() << "\t";
         cout << "Project Duration(Days): " << vClsProjectData[i].getProjectDurationDays()<< "\t";
-        cout << "Project Fee: " << char(156) << vClsProjectData[i].getProjectFee() << "\t";
+        cout << fixed << setprecision(2) << "Project Fee: " << char(156) << vClsProjectData[i].getProjectFee() << "\t";
         cout << "Project Status: " << vClsProjectData[i].getProjectStatus() << "\t";
-        cout << "Project Cost: " << char(156) << dProjectCost<<"\t";
-        cout << "OverBudget Cost 10%: " << char(156) << dProjectCostOverBudgetMin << "\t";
-        cout << "OverBudget Cost 35%: " << char(156) << dProjectCostOverBudgetMax << "\n";
-        cout << "Remaining Project Budget (10%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMin << "\t";
-        cout << "Remaining Project Budget (35%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMax<< "\n\n";
+        cout << fixed << setprecision(2) << "Project Cost: " << char(156) << dProjectCost<<"\t";
+        cout << fixed << setprecision(2) << "OverBudget Cost 10%: " << char(156) << dProjectCostOverBudgetMin << "\t";
+        cout << fixed << setprecision(2) << "OverBudget Cost 35%: " << char(156) << dProjectCostOverBudgetMax << "\n";
+        cout << fixed << setprecision(2) << "Remaining Project Budget (10%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMin << "\t";
+        cout <<fixed<<setprecision(2)<< "Remaining Project Budget (35%): " << char(156) << vClsProjectData[i].getProjectFee() - dProjectCostOverBudgetMax<< "\n\n";
 
         if (vClsProjectData[i].getProjectStatus() == "open") {
             iOpenProjectCount++;
