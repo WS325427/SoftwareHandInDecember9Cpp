@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
-
+#include <algorithm>
 class clsEmployee {
 protected:
     int _iEmployeeId;
@@ -164,14 +164,29 @@ int main()
     startupScreen();
 };
 
+//handles positive integer inputs by user
 int updateUserChoice(int* iUserChoice) {
     //Allows for positive integers only to be returned
     int iOption;
     std::cin >> iOption;
-    //be careful with !std::cin?
-    while (!std::cin || iOption < 0)
+    while (!iOption || iOption < 0)
     {
         std::cout << "Invalid Integer, Try Again!\n ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> iOption;
+    }
+    *iUserChoice = iOption;
+    return *iUserChoice;
+}
+
+double updateUserChoice(double* iUserChoice) {
+    //Allows for positive doubles only to be returned
+    double iOption;
+    std::cin >> iOption;
+    while (!iOption || iOption < 0)
+    {
+        std::cout << "Invalid Number, Try Again!\n ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> iOption;
@@ -376,12 +391,16 @@ void collectStaffDetails() {
     std::vector <clsSalariedEmployee> clsAddSalariedEmployee;
     std::vector <clsContractEmployee> clsAddContractEmployee;
     std::vector <clsProject> vClsProjectData = readProjectCSV();
-    int iEmployeeId, iUserChoice, iWeeksPerYear;
+    int iEmployeeId =0 , iUserChoice, iWeeksPerYear = 100;
     std::string sFirstName, sLastName,sDepartment,sJobGrade,sAssignedProject ="non-project";
-    double dHourlyPay, dHoursPerWeek;
+    double dHourlyPay, dHoursPerWeek = 100;
     bool bFoundMatch = false;
-    std::cout << "Enter 6 Digit ID: ";
-    std::cin >> iEmployeeId;
+
+    //converts to string to count length to ensure it is always 6 figures
+    while (std::to_string(iEmployeeId).length()!=6) {
+        std::cout << "Enter 6 Digit ID: ";
+        iEmployeeId = updateUserChoice(&iEmployeeId);
+    }
     std::cout << "Enter First Name: ";
     std::cin >> sFirstName;
     std::cout << "Enter Last Name: ";
@@ -432,10 +451,15 @@ void collectStaffDetails() {
         break;
     case 3:
         sJobGrade = "Contracted";
+
         std::cout << "\nHow many hours per week?(max 20): ";
-        std::cin >> dHoursPerWeek;
+        while (dHoursPerWeek > 20) {
+            updateUserChoice(&dHoursPerWeek);
+        }
         std::cout << "\nHow many weeks per year?(max30): ";
-        std::cin >> iWeeksPerYear;
+        while (iWeeksPerYear > 30) {
+            updateUserChoice(&iWeeksPerYear);
+        }
         break;
     default:
         std::cout << "\nError Inputs, Please try again\n";
@@ -443,7 +467,7 @@ void collectStaffDetails() {
         break;
     }
     std::cout << "Enter hourly pay: "<<char(156);
-    std::cin >> dHourlyPay;
+    updateUserChoice(&dHourlyPay);
 
     std::cout << "Would you like to add this employee on a project now?\n";
     std::cout << "   Press 1 to Assign, else press a button to continue...\n";
@@ -556,6 +580,14 @@ void removeStaff() {
     FILL();
 };
 
+std::string convertToLowerCase(std::string stringData) {
+    // convert string to back to lower case, from stackoverflow
+    std::for_each(stringData.begin(), stringData.end(), [](char& c) {
+        c = ::tolower(c);
+        });
+    return stringData;
+}
+
 std::string inputMatchingProjectName(std::vector <clsProject> vClsProjectData) {
     bool bFoundMatch = false;
     std::string sAssignedProjectInput;
@@ -563,10 +595,12 @@ std::string inputMatchingProjectName(std::vector <clsProject> vClsProjectData) {
     for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
         std::cout << i + 1 << ") " << vClsProjectData[i].getProjectName() << "\n";
     }
-    std::cout << "Please type the assigned project(case sensitive)\n";
+    std::cout << "Please type the assigned project\n";
     std::cin >> sAssignedProjectInput;
     for (size_t i = 0, ilen = vClsProjectData.size(); i < ilen; ++i) {
-        if (sAssignedProjectInput == vClsProjectData[i].getProjectName()) {
+        if (convertToLowerCase(sAssignedProjectInput) == convertToLowerCase(vClsProjectData[i].getProjectName())) {
+            //makes sure we return csv case formatting and not user input
+            sAssignedProjectInput = vClsProjectData[i].getProjectName();
             bFoundMatch = true;
             std::cout << "Succesfully Found Project  Click a button to continue\n";
             _getch();
@@ -584,12 +618,14 @@ std::string inputMatchingProjectName(std::vector <clsProject> vClsProjectData) {
 void updateStaffDetails() {
     std::vector <clsEmployee> vClsEmployeeData = readEmployeeCSV();
     std::vector <clsProject> vClsProjectData = readProjectCSV();
-    int iStaffId, iUserChoice;
+    int iStaffId = 0, iUserChoice;
     double dUpdatedHourlyPay;
     bool bFoundMatch = false, bUpdatedData = false;
     std::string sAssignedProjectInput;
-    std::cout << "Please Enter the 6-digit ID of the staff you'd like to udpate: ";
-    std::cin >> iStaffId;
+    while (std::to_string(iStaffId).length() != 6) {
+        std::cout << "Please Enter the 6-digit ID of the staff you'd like to udpate: ";
+        iStaffId = updateUserChoice(&iStaffId);
+    };
     std::cout << "\nSearching........\n";
     for (size_t i = 0, ilen = vClsEmployeeData.size(); i < ilen; ++i) {
         if (vClsEmployeeData[i].getID() == iStaffId) {
@@ -615,7 +651,7 @@ void updateStaffDetails() {
                 break;
             case 2:
                 std::cout << "Please enter a new hourly pay: " << char(156);
-                std::cin >> dUpdatedHourlyPay;
+                updateUserChoice(&dUpdatedHourlyPay);
                 vClsEmployeeData[i].setHourlyPay(dUpdatedHourlyPay);
                 bUpdatedData = true;
                 break;
